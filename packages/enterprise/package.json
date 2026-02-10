@@ -10,7 +10,9 @@
     "build": "vite build",
     "build:cloudflare": "OPENCODE_DEPLOYMENT_TARGET=cloudflare vite build",
     "start": "vite start",
-    "shell-prod": "sst shell --target Teams --stage production"
+    "shell-prod": "sst shell --target Teams --stage production",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@tscoder/util": "*",
@@ -35,7 +37,8 @@
     "@types/luxon": "3.7.1",
     "tailwindcss": "4.1.11",
     "typescript": "5.8.2",
-    "vite": "7.1.4"
+    "vite": "7.1.4",
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=22"

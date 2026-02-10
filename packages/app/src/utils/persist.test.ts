@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, mock, test } from "vitest"
+import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest"
 
 type PersistTestingType = typeof import("./persist").PersistTesting
 
@@ -46,11 +46,11 @@ const storage = new MemoryStorage()
 
 let persistTesting: PersistTestingType
 
-beforeAll(async () => {
-  mock.module("@/context/platform", () => ({
-    usePlatform: () => ({ platform: "web" }),
-  }))
+vi.mock("@/context/platform", () => ({
+  usePlatform: () => ({ platform: "web" }),
+}))
 
+beforeAll(async () => {
   const mod = await import("./persist")
   persistTesting = mod.PersistTesting
 })

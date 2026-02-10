@@ -385,14 +385,14 @@ export default function FileTree(props: {
                     <Show when={label()}>
                       {(t: () => string) => (
                         <>
-                          <span class="mx-1 font-bold text-text-invert-strong">â€?/span>
+                          <span class="mx-1 font-bold text-text-invert-strong">Â·</span>
                           <span class="shrink-0 text-text-invert-strong">{t()}</span>
                         </>
                       )}
                     </Show>
                     <Show when={ignored()}>
                       <>
-                        <span class="mx-1 font-bold text-text-invert-strong">â€?/span>
+                        <span class="mx-1 font-bold text-text-invert-strong">Â·</span>
                         <span class="shrink-0 text-text-invert-strong">Ignored</span>
                       </>
                     </Show>

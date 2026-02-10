@@ -1,19 +1,20 @@
-import { beforeAll, describe, expect, mock, test } from "vitest"
+import { beforeAll, describe, expect, test, vi } from "vitest"
 import { createRoot } from "solid-js"
 import type { LineComment } from "./comments"
 
 let createCommentSessionForTest: typeof import("./comments").createCommentSessionForTest
 
+vi.mock("@solidjs/router", () => ({
+  useParams: () => ({}),
+}))
+vi.mock("@tscoder/ui/context", () => ({
+  createSimpleContext: () => ({
+    use: () => undefined,
+    provider: () => undefined,
+  }),
+}))
+
 beforeAll(async () => {
-  mock.module("@solidjs/router", () => ({
-    useParams: () => ({}),
-  }))
-  mock.module("@tscoder/ui/context", () => ({
-    createSimpleContext: () => ({
-      use: () => undefined,
-      provider: () => undefined,
-    }),
-  }))
   const mod = await import("./comments")
   createCommentSessionForTest = mod.createCommentSessionForTest
 })

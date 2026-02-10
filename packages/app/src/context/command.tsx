@@ -146,17 +146,17 @@ export function formatKeybind(config: string): string {
   const kb = keybinds[0]
   const parts: string[] = []
 
-  if (kb.ctrl) parts.push(IS_MAC ? "‚å? : "Ctrl")
-  if (kb.alt) parts.push(IS_MAC ? "‚å? : "Alt")
-  if (kb.shift) parts.push(IS_MAC ? "‚á? : "Shift")
-  if (kb.meta) parts.push(IS_MAC ? "‚å? : "Meta")
+  if (kb.ctrl) parts.push(IS_MAC ? "‚åÉ" : "Ctrl")
+  if (kb.alt) parts.push(IS_MAC ? "‚å•" : "Alt")
+  if (kb.shift) parts.push(IS_MAC ? "‚áß" : "Shift")
+  if (kb.meta) parts.push(IS_MAC ? "‚åò" : "Meta")
 
   if (kb.key) {
     const keys: Record<string, string> = {
-      arrowup: "‚Ü?,
-      arrowdown: "‚Ü?,
-      arrowleft: "‚Ü?,
-      arrowright: "‚Ü?,
+      arrowup: "‚Üë",
+      arrowdown: "‚Üì",
+      arrowleft: "‚Üê",
+      arrowright: "‚Üí",
       comma: ",",
       plus: "+",
       space: "Space",

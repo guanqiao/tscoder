@@ -15,8 +15,8 @@
     "build": "vite build",
     "serve": "vite preview",
     "test": "npm run test:unit",
-    "test:unit": "node --test --import ./happydom.ts ./src",
-    "test:unit:watch": "node --test --watch --import ./happydom.ts ./src",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:local": "node script/e2e-local.ts",
     "test:e2e:ui": "playwright test --ui",
@@ -35,7 +35,8 @@
     "typescript": "5.8.2",
     "vite": "7.1.4",
     "vite-plugin-icons-spritesheet": "3.0.1",
-    "vite-plugin-solid": "2.11.10"
+    "vite-plugin-solid": "2.11.10",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@kobalte/core": "0.13.11",

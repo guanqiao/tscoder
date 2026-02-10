@@ -1,18 +1,19 @@
-import { beforeAll, describe, expect, mock, test } from "vitest"
+import { beforeAll, describe, expect, test, vi } from "vitest"
 
 let getWorkspaceTerminalCacheKey: (dir: string) => string
 let getLegacyTerminalStorageKeys: (dir: string, legacySessionID?: string) => string[]
 
+vi.mock("@solidjs/router", () => ({
+  useParams: () => ({}),
+}))
+vi.mock("@tscoder/ui/context", () => ({
+  createSimpleContext: () => ({
+    use: () => undefined,
+    provider: () => undefined,
+  }),
+}))
+
 beforeAll(async () => {
-  mock.module("@solidjs/router", () => ({
-    useParams: () => ({}),
-  }))
-  mock.module("@tscoder/ui/context", () => ({
-    createSimpleContext: () => ({
-      use: () => undefined,
-      provider: () => undefined,
-    }),
-  }))
   const mod = await import("./terminal")
   getWorkspaceTerminalCacheKey = mod.getWorkspaceTerminalCacheKey
   getLegacyTerminalStorageKeys = mod.getLegacyTerminalStorageKeys

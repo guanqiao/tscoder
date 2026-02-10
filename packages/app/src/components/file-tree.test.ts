@@ -1,33 +1,34 @@
-import { beforeAll, describe, expect, mock, test } from "vitest"
+import { beforeAll, describe, expect, test, vi } from "vitest"
 
 let shouldListRoot: typeof import("./file-tree").shouldListRoot
 let shouldListExpanded: typeof import("./file-tree").shouldListExpanded
 let dirsToExpand: typeof import("./file-tree").dirsToExpand
 
-beforeAll(async () => {
-  mock.module("@solidjs/router", () => ({
-    useParams: () => ({}),
-  }))
-  mock.module("@/context/file", () => ({
-    useFile: () => ({
-      tree: {
-        state: () => undefined,
-        list: () => Promise.resolve(),
-        children: () => [],
-        expand: () => {},
-        collapse: () => {},
-      },
-    }),
-  }))
-  mock.module("@tscoder/ui/collapsible", () => ({
-    Collapsible: {
-      Trigger: (props: { children?: unknown }) => props.children,
-      Content: (props: { children?: unknown }) => props.children,
+vi.mock("@solidjs/router", () => ({
+  useParams: () => ({}),
+}))
+vi.mock("@/context/file", () => ({
+  useFile: () => ({
+    tree: {
+      state: () => undefined,
+      list: () => Promise.resolve(),
+      children: () => [],
+      expand: () => {},
+      collapse: () => {},
     },
-  }))
-  mock.module("@tscoder/ui/file-icon", () => ({ FileIcon: () => null }))
-  mock.module("@tscoder/ui/icon", () => ({ Icon: () => null }))
-  mock.module("@tscoder/ui/tooltip", () => ({ Tooltip: (props: { children?: unknown }) => props.children }))
+  }),
+}))
+vi.mock("@tscoder/ui/collapsible", () => ({
+  Collapsible: {
+    Trigger: (props: { children?: unknown }) => props.children,
+    Content: (props: { children?: unknown }) => props.children,
+  },
+}))
+vi.mock("@tscoder/ui/file-icon", () => ({ FileIcon: () => null }))
+vi.mock("@tscoder/ui/icon", () => ({ Icon: () => null }))
+vi.mock("@tscoder/ui/tooltip", () => ({ Tooltip: (props: { children?: unknown }) => props.children }))
+
+beforeAll(async () => {
   const mod = await import("./file-tree")
   shouldListRoot = mod.shouldListRoot
   shouldListExpanded = mod.shouldListExpanded
