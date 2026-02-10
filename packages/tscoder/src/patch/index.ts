@@ -79,23 +79,28 @@ export namespace Patch {
     const line = lines[startIdx]
 
     if (line.startsWith("*** Add File:")) {
-      const filePath = line.split(":", 2)[1]?.trim()
+      // Handle Windows paths (e.g., "C:\path") by finding the first colon after the prefix
+      const prefix = "*** Add File:"
+      const filePath = line.slice(prefix.length).trim()
       return filePath ? { filePath, nextIdx: startIdx + 1 } : null
     }
 
     if (line.startsWith("*** Delete File:")) {
-      const filePath = line.split(":", 2)[1]?.trim()
+      const prefix = "*** Delete File:"
+      const filePath = line.slice(prefix.length).trim()
       return filePath ? { filePath, nextIdx: startIdx + 1 } : null
     }
 
     if (line.startsWith("*** Update File:")) {
-      const filePath = line.split(":", 2)[1]?.trim()
+      const prefix = "*** Update File:"
+      const filePath = line.slice(prefix.length).trim()
       let movePath: string | undefined
       let nextIdx = startIdx + 1
 
       // Check for move directive
       if (nextIdx < lines.length && lines[nextIdx].startsWith("*** Move to:")) {
-        movePath = lines[nextIdx].split(":", 2)[1]?.trim()
+        const movePrefix = "*** Move to:"
+        movePath = lines[nextIdx].slice(movePrefix.length).trim()
         nextIdx++
       }
 

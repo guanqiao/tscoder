@@ -3,6 +3,13 @@ import type { NamedError } from "@tscoder/util/error"
 import { APICallError } from "ai"
 import { SessionRetry } from "../../src/session/retry"
 import { MessageV2 } from "../../src/session/message-v2"
+import { Bun } from "../util/bun-compat"
+
+declare const globalThis: {
+  Bun: typeof Bun
+}
+
+globalThis.Bun = Bun
 
 function apiError(headers?: Record<string, string>): MessageV2.APIError {
   return new MessageV2.APIError({

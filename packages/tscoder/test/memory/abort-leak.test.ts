@@ -2,6 +2,13 @@ import { describe, test, expect } from "vitest"
 import path from "path"
 import { Instance } from "../../src/project/instance"
 import { WebFetchTool } from "../../src/tool/webfetch"
+import { Bun } from "../util/bun-compat"
+
+declare const globalThis: {
+  Bun: typeof Bun
+}
+
+globalThis.Bun = Bun
 
 const projectRoot = path.join(__dirname, "../..")
 
