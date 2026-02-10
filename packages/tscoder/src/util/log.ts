@@ -64,10 +64,9 @@ export namespace Log {
       Global.Path.log,
       options.dev ? "dev.log" : new Date().toISOString().split(".")[0].replace(/:/g, "") + ".log",
     )
-    const logfile = file(logpath)
     await fs.truncate(logpath).catch(() => {})
     write = async (msg: any) => {
-      await logfile.write(msg)
+      await fs.appendFile(logpath, msg)
       return msg.length
     }
   }

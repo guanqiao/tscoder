@@ -1,5 +1,6 @@
 import { test, expect, describe } from "vitest"
 import path from "path"
+import fs from "fs/promises"
 import { unlink } from "fs/promises"
 
 import { tmpdir } from "../fixture/fixture"
@@ -7,6 +8,12 @@ import { Instance } from "../../src/project/instance"
 import { Provider } from "../../src/provider/provider"
 import { Env } from "../../src/env"
 import { Global } from "../../src/global"
+import { file as BunFile } from "../util/bun-compat"
+
+// 兼容层：将 Bun.file 替换为 Node.js 实现
+const Bun = {
+  file: BunFile
+}
 
 test("Bedrock: config region takes precedence over AWS_REGION env var", async () => {
   await using tmp = await tmpdir({

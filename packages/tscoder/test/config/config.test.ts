@@ -7,6 +7,12 @@ import path from "path"
 import fs from "fs/promises"
 import { pathToFileURL } from "url"
 import { Global } from "../../src/global"
+import { file as BunFile } from "../util/bun-compat"
+
+// 兼容层：将 Bun.file 替换为 Node.js 实现
+const Bun = {
+  file: BunFile
+}
 
 // Get managed config directory from environment (set in preload.ts)
 const managedConfigDir = process.env.OPENCODE_TEST_MANAGED_CONFIG_DIR!

@@ -5,8 +5,14 @@ import { Instance } from "../../src/project/instance"
 import { tmpdir } from "../fixture/fixture"
 import { PermissionNext } from "../../src/permission/next"
 import { Agent } from "../../src/agent/agent"
+import { file as BunFile } from "../util/bun-compat"
 
-const FIXTURES_DIR = path.join(import.meta.dir, "fixtures")
+// 兼容层：将 Bun.file 替换为 Node.js 实现
+const Bun = {
+  file: BunFile
+}
+
+const FIXTURES_DIR = path.join(import.meta.dirname || import.meta.url, "fixtures")
 
 const ctx = {
   sessionID: "test",

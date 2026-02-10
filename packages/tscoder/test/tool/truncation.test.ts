@@ -3,8 +3,14 @@ import { Truncate } from "../../src/tool/truncation"
 import { Identifier } from "../../src/id/id"
 import fs from "fs/promises"
 import path from "path"
+import { file as BunFile } from "../util/bun-compat"
 
-const FIXTURES_DIR = path.join(import.meta.dir, "fixtures")
+// 兼容层：将 Bun.file 替换为 Node.js 实现
+const Bun = {
+  file: BunFile
+}
+
+const FIXTURES_DIR = path.join(import.meta.dirname || import.meta.url, "fixtures")
 
 describe("Truncate", () => {
   describe("output", () => {

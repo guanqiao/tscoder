@@ -1,4 +1,4 @@
-import { $ } from "bun"
+import { $ } from "../../src/platform"
 import * as fs from "fs/promises"
 import os from "os"
 import path from "path"
@@ -15,6 +15,7 @@ type TmpDirOptions<T> = {
   init?: (dir: string) => Promise<T>
   dispose?: (dir: string) => Promise<T>
 }
+
 export async function tmpdir<T>(options?: TmpDirOptions<T>) {
   const dirpath = sanitizePath(path.join(os.tmpdir(), "opencode-test-" + Math.random().toString(36).slice(2)))
   await fs.mkdir(dirpath, { recursive: true })
@@ -23,7 +24,7 @@ export async function tmpdir<T>(options?: TmpDirOptions<T>) {
     await $`git commit --allow-empty -m "root commit ${dirpath}"`.cwd(dirpath).quiet()
   }
   if (options?.config) {
-    await Bun.write(
+    await fs.writeFile(
       path.join(dirpath, "opencode.json"),
       JSON.stringify({
         $schema: "https://opencode.ai/config.json",

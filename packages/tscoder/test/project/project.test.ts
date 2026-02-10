@@ -2,9 +2,15 @@ import { describe, expect, test } from "vitest"
 import { Project } from "../../src/project/project"
 import { Log } from "../../src/util/log"
 import { Storage } from "../../src/storage/storage"
-import { $ } from "bun"
+import { $ } from "../../src/platform"
+import { file as BunFile } from "../util/bun-compat"
 import path from "path"
 import { tmpdir } from "../fixture/fixture"
+
+// 兼容层：将 Bun.file 替换为 Node.js 实现
+const Bun = {
+  file: BunFile
+}
 
 Log.init({ print: false })
 

@@ -1,8 +1,15 @@
 import { test, expect } from "vitest"
-import { $ } from "bun"
+import * as fs from "fs/promises"
+import { $ } from "../../src/platform"
+import { file as BunFile } from "../util/bun-compat"
 import { Snapshot } from "../../src/snapshot"
 import { Instance } from "../../src/project/instance"
 import { tmpdir } from "../fixture/fixture"
+
+// 兼容层：将 Bun.file 替换为 Node.js 实现
+const Bun = {
+  file: BunFile
+}
 
 async function bootstrap() {
   return tmpdir({

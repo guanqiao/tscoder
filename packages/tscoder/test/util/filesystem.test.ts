@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest"
 import os from "node:os"
 import path from "node:path"
-import { mkdtemp, mkdir, rm } from "node:fs/promises"
+import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises"
 import { Filesystem } from "../../src/util/filesystem"
 
 describe("util.filesystem", () => {
@@ -12,7 +12,7 @@ describe("util.filesystem", () => {
     const missing = path.join(tmp, "missing")
 
     await mkdir(dir, { recursive: true })
-    await fs.writeFile(file, "hello")
+    await writeFile(file, "hello")
 
     const cases = await Promise.all([Filesystem.exists(dir), Filesystem.exists(file), Filesystem.exists(missing)])
 
@@ -28,7 +28,7 @@ describe("util.filesystem", () => {
     const missing = path.join(tmp, "missing")
 
     await mkdir(dir, { recursive: true })
-    await fs.writeFile(file, "hello")
+    await writeFile(file, "hello")
 
     const cases = await Promise.all([Filesystem.isDir(dir), Filesystem.isDir(file), Filesystem.isDir(missing)])
 

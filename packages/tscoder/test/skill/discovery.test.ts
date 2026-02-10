@@ -1,6 +1,12 @@
 import { describe, test, expect } from "vitest"
 import { Discovery } from "../../src/skill/discovery"
 import path from "path"
+import { file as BunFile } from "../util/bun-compat"
+
+// 兼容层：将 Bun.file 替换为 Node.js 实现
+const Bun = {
+  file: BunFile
+}
 
 const CLOUDFLARE_SKILLS_URL = "https://developers.cloudflare.com/.well-known/skills/"
 

@@ -10,6 +10,12 @@ import { ModelsDev } from "../../src/provider/models"
 import { tmpdir } from "../fixture/fixture"
 import type { Agent } from "../../src/agent/agent"
 import type { MessageV2 } from "../../src/session/message-v2"
+import { file as BunFile } from "../util/bun-compat"
+
+// 兼容层：将 Bun.file 替换为 Node.js 实现
+const Bun = {
+  file: BunFile
+}
 
 describe("session.llm.hasToolCalls", () => {
   test("returns false for empty messages array", () => {
