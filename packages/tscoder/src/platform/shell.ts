@@ -124,8 +124,8 @@ export function $(strings: TemplateStringsArray, ...values: unknown[]): ShellCom
 }
 
 export interface SpawnResult {
-  stdout: ReadableStream<string> | null
-  stderr: ReadableStream<string> | null
+  stdout: NodeJS.ReadableStream | null
+  stderr: NodeJS.ReadableStream | null
   exited: Promise<number>
   exitCode: number | null
   kill(signal?: NodeJS.Signals): boolean
@@ -140,7 +140,7 @@ export function spawnAsync(
     stderr?: "pipe" | "inherit" | "ignore"
     stdin?: "pipe" | "inherit" | "ignore"
   } = {}
-): ChildProcess {
+): SpawnResult {
   const [cmd, ...args] = command
   const child = spawn(cmd, args, {
     cwd: options.cwd,
@@ -151,7 +151,25 @@ export function spawnAsync(
       options.stderr ?? "inherit",
     ],
   })
-  return child
+
+  const exited = new Promise<number>((resolve) => {
+    child.on("close", (code) => resolve(code ?? 0))
+    child.on("exit", (code) => resolve(code ?? 0))
+  })
+
+  return {
+    stdout: child.stdout,
+    stderr: child.stderr,
+    exited,
+    exitCode: null,
+    kill: (signal?: NodeJS.Signals) => {
+      if (!child.killed) {
+        child.kill(signal)
+        return true
+      }
+      return false
+    },
+  }
 }
 
 export async function streamToText(stream: ReadableStream<Uint8Array> | NodeJS.ReadableStream | null): Promise<string> {
