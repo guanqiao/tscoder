@@ -33,13 +33,13 @@ import { lazy } from "../util/lazy"
 import { InstanceBootstrap } from "../project/bootstrap"
 import { Storage } from "../storage/storage"
 import type { ContentfulStatusCode } from "hono/utils/http-status"
-import { websocket } from "hono/bun"
 import { HTTPException } from "hono/http-exception"
 import { errors } from "./error"
 import { QuestionRoutes } from "./routes/question"
 import { PermissionRoutes } from "./routes/permission"
 import { GlobalRoutes } from "./routes/global"
 import { MDNS } from "./mdns"
+import { serve } from "@/platform/server"
 
 // @ts-ignore This global is needed to prevent ai-sdk from logging warnings to stdout https://github.com/vercel/ai/blob/2dc67e0ef538307f21368db32d5a12345d98831b/packages/ai/src/logger/log-warnings.ts#L85
 globalThis.AI_SDK_LOG_WARNINGS = false
@@ -574,13 +574,11 @@ export namespace Server {
 
     const args = {
       hostname: opts.hostname,
-      idleTimeout: 0,
       fetch: App().fetch,
-      websocket: websocket,
     } as const
     const tryServe = (port: number) => {
       try {
-        return Bun.serve({ ...args, port })
+        return serve({ ...args, port })
       } catch {
         return undefined
       }
@@ -588,7 +586,7 @@ export namespace Server {
     const server = opts.port === 0 ? (tryServe(4096) ?? tryServe(0)) : tryServe(opts.port)
     if (!server) throw new Error(`Failed to start server on port ${opts.port}`)
 
-    _url = server.url
+    _url = new URL(`http://${opts.hostname}:${server.port}`)
 
     const shouldPublishMDNS =
       opts.mdns &&

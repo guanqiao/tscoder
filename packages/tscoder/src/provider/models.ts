@@ -6,6 +6,7 @@ import { Installation } from "../installation"
 import { Flag } from "../flag/flag"
 import { lazy } from "@/util/lazy"
 import { fileURLToPath } from "url"
+import { file } from "@/platform"
 
 // Try to import bundled snapshot (generated at build time)
 // Falls back to undefined in dev mode when snapshot doesn't exist
@@ -95,13 +96,13 @@ export namespace ModelsDev {
   export const Data = lazy(async () => {
     // 1. Try user-specified path first
     if (Flag.OPENCODE_MODELS_PATH) {
-      const file = Bun.file(Flag.OPENCODE_MODELS_PATH)
-      const result = await file.json().catch(() => {})
+      const f = file(Flag.OPENCODE_MODELS_PATH)
+      const result = await f.json().catch(() => {})
       if (result) return result
     }
 
     // 2. Try local bundled models
-    const localFile = Bun.file(LOCAL_MODELS_PATH)
+    const localFile = file(LOCAL_MODELS_PATH)
     const localResult = await localFile.json().catch(() => {})
     if (localResult) {
       log.info("loaded bundled models data", { path: LOCAL_MODELS_PATH })
@@ -109,7 +110,7 @@ export namespace ModelsDev {
     }
 
     // 3. Try cached models
-    const cacheFile = Bun.file(filepath)
+    const cacheFile = file(filepath)
     const cacheResult = await cacheFile.json().catch(() => {})
     if (cacheResult) return cacheResult
 

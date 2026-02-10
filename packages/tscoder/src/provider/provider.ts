@@ -14,6 +14,8 @@ import { Env } from "../env"
 import { Instance } from "../project/instance"
 import { Flag } from "../flag/flag"
 import { iife } from "@/util/iife"
+import { file } from "@/platform"
+import { createHash } from "crypto"
 
 // Direct imports for bundled providers
 import { createAmazonBedrock, type AmazonBedrockProviderSettings } from "@ai-sdk/amazon-bedrock"
@@ -727,7 +729,7 @@ export namespace Provider {
         const caCertPath = llm.caCert.startsWith("~") 
           ? llm.caCert.replace("~", os.homedir()) 
           : llm.caCert
-        const caCert = await Bun.file(caCertPath).text().catch(() => {
+        const caCert = await file(caCertPath).text().catch(() => {
           log.error("Failed to read CA certificate", { path: caCertPath, llm: llm.name })
           return undefined
         })
@@ -1065,7 +1067,10 @@ export namespace Provider {
           ...model.headers,
         }
 
-      const key = Bun.hash.xxHash32(JSON.stringify({ providerID: model.providerID, npm: model.api.npm, options }))
+      const key = createHash("sha256")
+        .update(JSON.stringify({ providerID: model.providerID, npm: model.api.npm, options }))
+        .digest("hex")
+        .slice(0, 16)
       const existing = s.sdk.get(key)
       if (existing) return existing
 
