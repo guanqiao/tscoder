@@ -1,5 +1,6 @@
-import { readableStreamToText, semver } from "bun"
 import { Log } from "../util/log"
+import { spawn } from "child_process"
+import { satisfies, compare } from "semver"
 
 export namespace PackageRegistry {
   const log = Log.create({ service: "bun" })
@@ -9,19 +10,30 @@ export namespace PackageRegistry {
   }
 
   export async function info(pkg: string, field: string, cwd?: string): Promise<string | null> {
-    const result = Bun.spawn([which(), "info", pkg, field], {
+    const proc = spawn(which(), ["info", pkg, field], {
       cwd,
-      stdout: "pipe",
-      stderr: "pipe",
       env: {
         ...process.env,
         BUN_BE_BUN: "1",
       },
     })
 
-    const code = await result.exited
-    const stdout = result.stdout ? await readableStreamToText(result.stdout) : ""
-    const stderr = result.stderr ? await readableStreamToText(result.stderr) : ""
+    let stdout = ""
+    let stderr = ""
+
+    proc.stdout?.on("data", (data) => {
+      stdout += data.toString()
+    })
+
+    proc.stderr?.on("data", (data) => {
+      stderr += data.toString()
+    })
+
+    const code = await new Promise<number>((resolve) => {
+      proc.on("exit", (exitCode) => {
+        resolve(exitCode ?? 0)
+      })
+    })
 
     if (code !== 0) {
       log.warn("bun info failed", { pkg, field, code, stderr })
@@ -41,8 +53,8 @@ export namespace PackageRegistry {
     }
 
     const isRange = /[\s^~*xX<>|=]/.test(cachedVersion)
-    if (isRange) return !semver.satisfies(latestVersion, cachedVersion)
+    if (isRange) return !satisfies(latestVersion, cachedVersion)
 
-    return semver.order(cachedVersion, latestVersion) === -1
+    return compare(cachedVersion, latestVersion) === -1
   }
 }

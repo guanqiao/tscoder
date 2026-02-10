@@ -4,49 +4,58 @@ import { Log } from "../util/log"
 import path from "path"
 import { Filesystem } from "../util/filesystem"
 import { NamedError } from "@tscoder/util/error"
-import { readableStreamToText } from "bun"
 import { Lock } from "../util/lock"
 import { PackageRegistry } from "./registry"
 import { proxied } from "@/util/proxied"
+import { spawnAsync, which, file, writeFile } from "@/platform"
+import { spawn } from "child_process"
 
 export namespace BunProc {
   const log = Log.create({ service: "bun" })
 
-  export async function run(cmd: string[], options?: Bun.SpawnOptions.OptionsObject<any, any, any>) {
+  export async function run(cmd: string[], options?: { cwd?: string; env?: Record<string, string> }) {
     log.info("running", {
       cmd: [which(), ...cmd],
       ...options,
     })
-    const result = Bun.spawn([which(), ...cmd], {
-      ...options,
-      stdout: "pipe",
-      stderr: "pipe",
+
+    const proc = spawn(which(), cmd, {
+      cwd: options?.cwd,
       env: {
         ...process.env,
         ...options?.env,
         BUN_BE_BUN: "1",
       },
     })
-    const code = await result.exited
-    const stdout = result.stdout
-      ? typeof result.stdout === "number"
-        ? result.stdout
-        : await readableStreamToText(result.stdout)
-      : undefined
-    const stderr = result.stderr
-      ? typeof result.stderr === "number"
-        ? result.stderr
-        : await readableStreamToText(result.stderr)
-      : undefined
+
+    let stdout = ""
+    let stderr = ""
+
+    proc.stdout?.on("data", (data) => {
+      stdout += data.toString()
+    })
+
+    proc.stderr?.on("data", (data) => {
+      stderr += data.toString()
+    })
+
+    const code = await new Promise<number>((resolve) => {
+      proc.on("exit", (exitCode) => {
+        resolve(exitCode ?? 0)
+      })
+    })
+
     log.info("done", {
       code,
       stdout,
       stderr,
     })
+
     if (code !== 0) {
-      throw new Error(`Command failed with exit code ${result.exitCode}`)
+      throw new Error(`Command failed with exit code ${code}`)
     }
-    return result
+
+    return { exitCode: code, stdout, stderr }
   }
 
   export function which() {
@@ -66,12 +75,18 @@ export namespace BunProc {
     using _ = await Lock.write("bun-install")
 
     const mod = path.join(Global.Path.cache, "node_modules", pkg)
-    const pkgjson = Bun.file(path.join(Global.Path.cache, "package.json"))
-    const parsed = await pkgjson.json().catch(async () => {
-      const result = { dependencies: {} }
-      await Bun.write(pkgjson.name!, JSON.stringify(result, null, 2))
-      return result
-    })
+    const pkgjsonPath = path.join(Global.Path.cache, "package.json")
+    const pkgjson = file(pkgjsonPath)
+
+    let parsed: { dependencies: Record<string, string> }
+    try {
+      const content = await pkgjson.text()
+      parsed = JSON.parse(content)
+    } catch {
+      parsed = { dependencies: {} }
+      await writeFile(pkgjsonPath, JSON.stringify(parsed, null, 2))
+    }
+
     const dependencies = parsed.dependencies ?? {}
     if (!parsed.dependencies) parsed.dependencies = dependencies
     const modExists = await Filesystem.exists(mod)
@@ -123,15 +138,20 @@ export namespace BunProc {
     // This ensures subsequent starts use the cached version until explicitly updated
     let resolvedVersion = version
     if (version === "latest") {
-      const installedPkgJson = Bun.file(path.join(mod, "package.json"))
-      const installedPkg = await installedPkgJson.json().catch(() => null)
-      if (installedPkg?.version) {
-        resolvedVersion = installedPkg.version
+      const installedPkgJsonPath = path.join(mod, "package.json")
+      try {
+        const content = await file(installedPkgJsonPath).text()
+        const installedPkg = JSON.parse(content)
+        if (installedPkg?.version) {
+          resolvedVersion = installedPkg.version
+        }
+      } catch {
+        // ignore
       }
     }
 
     parsed.dependencies[pkg] = resolvedVersion
-    await Bun.write(pkgjson.name!, JSON.stringify(parsed, null, 2))
+    await writeFile(pkgjsonPath, JSON.stringify(parsed, null, 2))
     return mod
   }
 }
