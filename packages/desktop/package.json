@@ -6,9 +6,9 @@
   "license": "MIT",
   "scripts": {
     "typecheck": "tsgo -b",
-    "predev": "bun ./scripts/predev.ts",
+    "predev": "node ./scripts/predev.ts",
     "dev": "vite",
-    "build": "bun run typecheck && vite build",
+    "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
   },

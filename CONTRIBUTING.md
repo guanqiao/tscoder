@@ -26,26 +26,26 @@ Want to take on an issue? Leave a comment and a maintainer may assign it to you 
 
 ## Developing OpenCode
 
-- Requirements: Bun 1.3+
+- Requirements: Node.js 22+, npm 10.8+
 - Install dependencies and start the dev server from the repo root:
 
   ```bash
-  bun install
-  bun dev
+  npm install
+  npm run dev
   ```
 
 ### Running against a different directory
 
-By default, `bun dev` runs OpenCode in the `packages/opencode` directory. To run it against a different directory or repository:
+By default, `npm run dev` runs OpenCode in the `packages/tscoder` directory. To run it against a different directory or repository:
 
 ```bash
-bun dev <directory>
+npm run dev -- <directory>
 ```
 
 To run OpenCode in the root of the opencode repo itself:
 
 ```bash
-bun dev .
+npm run dev -- .
 ```
 
 ### Building a "localcode"
@@ -53,40 +53,40 @@ bun dev .
 To compile a standalone executable:
 
 ```bash
-./packages/opencode/script/build.ts --single
+node ./packages/tscoder/script/build.ts --single
 ```
 
 Then run it with:
 
 ```bash
-./packages/opencode/dist/opencode-<platform>/bin/opencode
+./packages/tscoder/dist/tscoder-<platform>/bin/tscoder
 ```
 
 Replace `<platform>` with your platform (e.g., `darwin-arm64`, `linux-x64`).
 
 - Core pieces:
-  - `packages/opencode`: OpenCode core business logic & server.
-  - `packages/opencode/src/cli/cmd/tui/`: The TUI code, written in SolidJS with [opentui](https://github.com/sst/opentui)
+  - `packages/tscoder`: OpenCode core business logic & server.
+  - `packages/tscoder/src/cli/cmd/tui/`: The TUI code, written in SolidJS with [opentui](https://github.com/sst/opentui)
   - `packages/app`: The shared web UI components, written in SolidJS
   - `packages/desktop`: The native desktop app, built with Tauri (wraps `packages/app`)
   - `packages/plugin`: Source for `@tscoder/plugin`
 
-### Understanding bun dev vs opencode
+### Understanding npm run dev vs tscoder
 
-During development, `bun dev` is the local equivalent of the built `opencode` command. Both run the same CLI interface:
+During development, `npm run dev` is the local equivalent of the built `tscoder` command. Both run the same CLI interface:
 
 ```bash
 # Development (from project root)
-bun dev --help           # Show all available commands
-bun dev serve            # Start headless API server
-bun dev web              # Start server + open web interface
-bun dev <directory>      # Start TUI in specific directory
+npm run dev -- --help           # Show all available commands
+npm run dev -- serve            # Start headless API server
+npm run dev -- web              # Start server + open web interface
+npm run dev -- <directory>      # Start TUI in specific directory
 
 # Production
-opencode --help          # Show all available commands
-opencode serve           # Start headless API server
-opencode web             # Start server + open web interface
-opencode <directory>     # Start TUI in specific directory
+tscoder --help          # Show all available commands
+tscoder serve           # Start headless API server
+tscoder web             # Start server + open web interface
+tscoder <directory>     # Start TUI in specific directory
 ```
 
 ### Running the API Server
@@ -94,13 +94,13 @@ opencode <directory>     # Start TUI in specific directory
 To start the OpenCode headless API server:
 
 ```bash
-bun dev serve
+npm run dev -- serve
 ```
 
 This starts the headless server on port 4096 by default. You can specify a different port:
 
 ```bash
-bun dev serve --port 8080
+npm run dev -- serve --port 8080
 ```
 
 ### Running the Web App
@@ -111,7 +111,7 @@ To test UI changes during development:
 2. **Then run the web app:**
 
 ```bash
-bun run --cwd packages/app dev
+npm run dev --workspace=packages/app
 ```
 
 This starts a local dev server at http://localhost:5173 (or similar port shown in output). Most UI changes can be tested here, but the server must be running for full functionality.
@@ -123,7 +123,7 @@ The desktop app is a native Tauri application that wraps the web UI.
 To run the native desktop app:
 
 ```bash
-bun run --cwd packages/desktop tauri dev
+npm run tauri --workspace=packages/desktop -- dev
 ```
 
 This starts the web dev server on http://localhost:1420 and opens the native window.
@@ -131,45 +131,42 @@ This starts the web dev server on http://localhost:1420 and opens the native win
 If you only want the web dev server (no native shell):
 
 ```bash
-bun run --cwd packages/desktop dev
+npm run dev --workspace=packages/desktop
 ```
 
 To create a production `dist/` and build the native app bundle:
 
 ```bash
-bun run --cwd packages/desktop tauri build
+npm run tauri --workspace=packages/desktop -- build
 ```
 
-This runs `bun run --cwd packages/desktop build` automatically via Tauri’s `beforeBuildCommand`.
+This runs `npm run build --workspace=packages/desktop` automatically via Tauri's `beforeBuildCommand`.
 
 > [!NOTE]
 > Running the desktop app requires additional Tauri dependencies (Rust toolchain, platform-specific libraries). See the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for setup instructions.
 
 > [!NOTE]
-> If you make changes to the API or SDK (e.g. `packages/opencode/src/server/server.ts`), run `./script/generate.ts` to regenerate the SDK and related files.
+> If you make changes to the API or SDK (e.g. `packages/tscoder/src/server/server.ts`), run `node ./script/generate.ts` to regenerate the SDK and related files.
 
 Please try to follow the [style guide](./AGENTS.md)
 
 ### Setting up a Debugger
 
-Bun debugging is currently rough around the edges. We hope this guide helps you get set up and avoid some pain points.
-
-The most reliable way to debug OpenCode is to run it manually in a terminal via `bun run --inspect=<url> dev ...` and attach
-your debugger via that URL. Other methods can result in breakpoints being mapped incorrectly, at least in VSCode (YMMV).
+The most reliable way to debug OpenCode is to run it manually in a terminal via `node --inspect=<url> ...` and attach
+your debugger via that URL.
 
 Caveats:
 
-- If you want to run the OpenCode TUI and have breakpoints triggered in the server code, you might need to run `bun dev spawn` instead of
-  the usual `bun dev`. This is because `bun dev` runs the server in a worker thread and breakpoints might not work there.
+- If you want to run the OpenCode TUI and have breakpoints triggered in the server code, you might need to run `npm run dev -- spawn` instead of
+  the usual `npm run dev`.
 - If `spawn` does not work for you, you can debug the server separately:
-  - Debug server: `bun run --inspect=ws://localhost:6499/ --cwd packages/opencode ./src/index.ts serve --port 4096`,
-    then attach TUI with `opencode attach http://localhost:4096`
-  - Debug TUI: `bun run --inspect=ws://localhost:6499/ --cwd packages/opencode --conditions=browser ./src/index.ts`
+  - Debug server: `node --inspect=ws://localhost:6499/ ./packages/tscoder/src/index.ts serve --port 4096`,
+    then attach TUI with `tscoder attach http://localhost:4096`
+  - Debug TUI: `node --inspect=ws://localhost:6499/ ./packages/tscoder/src/index.ts`
 
 Other tips and tricks:
 
 - You might want to use `--inspect-wait` or `--inspect-brk` instead of `--inspect`, depending on your workflow
-- Specifying `--inspect=ws://localhost:6499/` on every invocation can be tiresome, you may want to `export BUN_OPTIONS=--inspect=ws://localhost:6499/` instead
 
 #### VSCode Setup
 
@@ -253,7 +250,7 @@ These are not strictly enforced, they are just general guidelines:
 - **Types:** Reach for precise types and avoid `any`.
 - **Variables:** Stick to immutable patterns and avoid `let`.
 - **Naming:** Choose concise single-word identifiers when they remain descriptive.
-- **Runtime APIs:** Use Bun helpers such as `Bun.file()` when they fit the use case.
+- **Runtime APIs:** Use Node.js standard APIs when possible.
 
 ## Feature Requests
 

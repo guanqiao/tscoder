@@ -25,7 +25,7 @@
   "scripts": {
     "typecheck": "tsgo --noEmit",
     "dev": "vite",
-    "generate:tailwind": "bun run script/tailwind.ts"
+    "generate:tailwind": "node script/tailwind.ts"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.11",
