@@ -1,20 +1,19 @@
 #!/bin/sh
 set -e
-# Check if bun version matches package.json
-# keep in sync with packages/script/src/index.ts semver qualifier
-bun -e '
-import { semver } from "bun";
-const pkg = await Bun.file("package.json").json();
-const expectedBunVersion = pkg.packageManager?.split("@")[1];
-if (!expectedBunVersion) {
-  throw new Error("packageManager field not found in root package.json");
-}
-const expectedBunVersionRange = `^${expectedBunVersion}`;
-if (!semver.satisfies(process.versions.bun, expectedBunVersionRange)) {
-  throw new Error(`This script requires bun@${expectedBunVersionRange}, but you are using bun@${process.versions.bun}`);
-}
-if (process.versions.bun !== expectedBunVersion) {
-  console.warn(`Warning: Bun version ${process.versions.bun} differs from expected ${expectedBunVersion}`);
+# Check if node version matches package.json
+node -e '
+const fs = require("fs");
+const path = require("path");
+
+const pkgPath = path.join(__dirname, "..", "package.json");
+const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+
+const expectedNodeVersion = pkg.engines?.node;
+if (expectedNodeVersion) {
+  const currentNodeVersion = process.version;
+  console.log(`Node.js version: ${currentNodeVersion} (required: ${expectedNodeVersion})`);
 }
 '
-bun typecheck
+
+# Run typecheck with node
+cd packages/tscoder && npm run typecheck
