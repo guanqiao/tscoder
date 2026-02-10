@@ -14,15 +14,16 @@ import path from "path"
 import { Global } from "../../global"
 import { modify, applyEdits } from "jsonc-parser"
 import { Bus } from "../../bus"
+import { file, writeFile } from "@/platform"
 
 function getAuthStatusIcon(status: MCP.AuthStatus): string {
   switch (status) {
     case "authenticated":
-      return "âœ?
+      return "ï¿½?
     case "expired":
-      return "âš?
+      return "ï¿½?
     case "not_authenticated":
-      return "âœ?
+      return "ï¿½?
   }
 }
 
@@ -98,26 +99,26 @@ export const McpListCommand = cmd({
           let hint = ""
 
           if (!status) {
-            statusIcon = "â—?
+            statusIcon = "ï¿½?
             statusText = "not initialized"
           } else if (status.status === "connected") {
-            statusIcon = "âœ?
+            statusIcon = "ï¿½?
             statusText = "connected"
             if (hasOAuth && hasStoredTokens) {
               hint = " (OAuth)"
             }
           } else if (status.status === "disabled") {
-            statusIcon = "â—?
+            statusIcon = "ï¿½?
             statusText = "disabled"
           } else if (status.status === "needs_auth") {
-            statusIcon = "âš?
+            statusIcon = "ï¿½?
             statusText = "needs authentication"
           } else if (status.status === "needs_client_registration") {
-            statusIcon = "âœ?
+            statusIcon = "ï¿½?
             statusText = "needs client registration"
             hint = "\n    " + status.error
           } else {
-            statusIcon = "âœ?
+            statusIcon = "ï¿½?
             statusText = "failed"
             hint = "\n    " + status.error
           }
@@ -388,7 +389,7 @@ async function resolveConfigPath(baseDir: string, global = false) {
   }
 
   for (const candidate of candidates) {
-    if (await Bun.file(candidate).exists()) {
+    if (await file(candidate).exists()) {
       return candidate
     }
   }
@@ -398,11 +399,11 @@ async function resolveConfigPath(baseDir: string, global = false) {
 }
 
 async function addMcpToConfig(name: string, mcpConfig: Config.Mcp, configPath: string) {
-  const file = Bun.file(configPath)
+  const f = file(configPath)
 
   let text = "{}"
-  if (await file.exists()) {
-    text = await file.text()
+  if (await f.exists()) {
+    text = await f.text()
   }
 
   // Use jsonc-parser to modify while preserving comments
@@ -411,7 +412,7 @@ async function addMcpToConfig(name: string, mcpConfig: Config.Mcp, configPath: s
   })
   const result = applyEdits(text, edits)
 
-  await Bun.write(configPath, result)
+  await writeFile(configPath, result)
 
   return configPath
 }
