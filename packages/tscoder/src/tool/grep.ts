@@ -6,6 +6,7 @@ import DESCRIPTION from "./grep.txt"
 import { Instance } from "../project/instance"
 import path from "path"
 import { assertExternalDirectory } from "./external-directory"
+import { spawnAsync, file } from "@/platform"
 
 const MAX_LINE_LENGTH = 2000
 
@@ -43,14 +44,13 @@ export const GrepTool = Tool.define("grep", {
     }
     args.push(searchPath)
 
-    const proc = Bun.spawn([rgPath, ...args], {
+    const proc = spawnAsync([rgPath, ...args], {
       stdout: "pipe",
       stderr: "pipe",
-      signal: ctx.abort,
     })
 
-    const output = await new Response(proc.stdout).text()
-    const errorOutput = await new Response(proc.stderr).text()
+    const output = await new Response(proc.stdout!).text()
+    const errorOutput = await new Response(proc.stderr!).text()
     const exitCode = await proc.exited
 
     // Exit codes: 0 = matches found, 1 = no matches, 2 = errors (but may still have matches)
@@ -83,8 +83,8 @@ export const GrepTool = Tool.define("grep", {
       const lineNum = parseInt(lineNumStr, 10)
       const lineText = lineTextParts.join("|")
 
-      const file = Bun.file(filePath)
-      const stats = await file.stat().catch(() => null)
+      const f = file(filePath)
+      const stats = await f.stat().catch(() => null)
       if (!stats) continue
 
       matches.push({

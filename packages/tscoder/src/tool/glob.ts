@@ -5,6 +5,7 @@ import DESCRIPTION from "./glob.txt"
 import { Ripgrep } from "../file/ripgrep"
 import { Instance } from "../project/instance"
 import { assertExternalDirectory } from "./external-directory"
+import { file } from "@/platform"
 
 export const GlobTool = Tool.define("glob", {
   description: DESCRIPTION,
@@ -45,7 +46,7 @@ export const GlobTool = Tool.define("glob", {
         break
       }
       const full = path.resolve(search, file)
-      const stats = await Bun.file(full)
+      const stats = await file(full)
         .stat()
         .then((x) => x.mtime.getTime())
         .catch(() => 0)
