@@ -1,5 +1,9 @@
 // IMPORTANT: Set env vars BEFORE any imports from src/ directory
 // xdg-basedir reads env vars at import time, so we must set these first
+
+// Set FAKE_VCS to git for snapshot tests
+process.env.OPENCODE_FAKE_VCS = "git"
+
 import os from "os"
 import path from "path"
 import fs from "fs/promises"

@@ -1,4 +1,4 @@
-import { describe, expect, test, spyOn, beforeEach, afterEach } from "vitest"
+import { describe, expect, test, vi, beforeEach, afterEach } from "vitest"
 import { z } from "zod"
 import { QuestionTool } from "../../src/tool/question"
 import * as QuestionModule from "../../src/question"
@@ -18,7 +18,7 @@ describe("tool.question", () => {
   let askSpy: any
 
   beforeEach(() => {
-    askSpy = spyOn(QuestionModule.Question, "ask").mockImplementation(async () => {
+    askSpy = vi.spyOn(QuestionModule.Question, "ask").mockImplementation(async () => {
       return []
     })
   })

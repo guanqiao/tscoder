@@ -1,4 +1,4 @@
-import { test, expect, mock, beforeEach } from "vitest"
+import { test, expect, vi, beforeEach } from "vitest"
 
 // Track what options were passed to each transport constructor
 const transportCalls: Array<{
@@ -8,7 +8,7 @@ const transportCalls: Array<{
 }> = []
 
 // Mock the transport constructors to capture their arguments
-mock.module("@modelcontextprotocol/sdk/client/streamableHttp.js", () => ({
+vi.mock("@modelcontextprotocol/sdk/client/streamableHttp.js", () => ({
   StreamableHTTPClientTransport: class MockStreamableHTTP {
     constructor(url: URL, options?: { authProvider?: unknown; requestInit?: RequestInit }) {
       transportCalls.push({
@@ -23,7 +23,7 @@ mock.module("@modelcontextprotocol/sdk/client/streamableHttp.js", () => ({
   },
 }))
 
-mock.module("@modelcontextprotocol/sdk/client/sse.js", () => ({
+vi.mock("@modelcontextprotocol/sdk/client/sse.js", () => ({
   SSEClientTransport: class MockSSE {
     constructor(url: URL, options?: { authProvider?: unknown; requestInit?: RequestInit }) {
       transportCalls.push({

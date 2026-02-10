@@ -77,7 +77,7 @@ const FIXTURES = {
 }
 
 function createMockFetch(chunks: string[]) {
-  return mock(async () => {
+  return vi.fn(async () => {
     const body = new ReadableStream({
       start(controller) {
         for (const chunk of chunks) {
@@ -541,7 +541,7 @@ describe("doStream", () => {
 describe("request body", () => {
   test("should send tools in OpenAI format", async () => {
     let capturedBody: unknown
-    const mockFetch = mock(async (_url: string, init?: RequestInit) => {
+    const mockFetch = vi.fn(async (_url: string, init?: RequestInit) => {
       capturedBody = JSON.parse(init?.body as string)
       return new Response(
         new ReadableStream({

@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest"
 import path from "path"
+import fs from "fs/promises"
 import { GrepTool } from "../../src/tool/grep"
 import { Instance } from "../../src/project/instance"
 import { tmpdir } from "../fixture/fixture"

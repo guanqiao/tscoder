@@ -16,6 +16,8 @@ export interface ShellResult {
   stdout: string
   stderr: string
   exitCode: number
+  text(): string
+  lines(): AsyncIterable<string>
 }
 
 export class ShellCommand {
@@ -57,6 +59,11 @@ export class ShellCommand {
     return this
   }
 
+  env(env: Record<string, string | undefined>): this {
+    this.options.env = { ...this.options.env, ...env }
+    return this
+  }
+
   async text(): Promise<string> {
     const result = await this.execute()
     return result.stdout
@@ -65,6 +72,34 @@ export class ShellCommand {
   async json<T>(): Promise<T> {
     const text = await this.text()
     return JSON.parse(text) as T
+  }
+
+  // Make ShellCommand thenable to support await
+  then<TResult1 = ShellResult, TResult2 = never>(
+    onfulfilled?: ((value: ShellResult) => TResult1 | PromiseLike<TResult1>) | undefined | null,
+    onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | undefined | null
+  ): Promise<TResult1 | TResult2> {
+    return this.execute().then(onfulfilled, onrejected)
+  }
+
+  // Make ShellCommand async iterable to support for await...of
+  async *[Symbol.asyncIterator](): AsyncGenerator<string> {
+    const result = await this.execute()
+    for await (const line of result.lines()) {
+      yield line
+    }
+  }
+
+  // lines() method that returns async iterable for ShellCommand
+  lines(): AsyncIterable<string> {
+    return {
+      [Symbol.asyncIterator]: async function* (this: ShellCommand) {
+        const result = await this.execute()
+        for await (const line of result.lines()) {
+          yield line
+        }
+      }.bind(this)
+    }
   }
 
   private async execute(): Promise<ShellResult> {
@@ -92,10 +127,17 @@ export class ShellCommand {
       }
 
       child.on("close", (code) => {
+        const trimmedStdout = stdout.trim()
         const result: ShellResult = {
-          stdout: stdout.trim(),
+          stdout: trimmedStdout,
           stderr: stderr.trim(),
           exitCode: code ?? 0,
+          text: () => trimmedStdout,
+          lines: async function* () {
+            for (const line of trimmedStdout.split("\n")) {
+              yield line
+            }
+          },
         }
         if (code !== 0 && !this.options.nothrow) {
           reject(new Error(`Command failed with exit code ${code}: ${stderr}`))
@@ -110,6 +152,8 @@ export class ShellCommand {
             stdout: "",
             stderr: error.message,
             exitCode: 1,
+            text: () => "",
+            lines: async function* () {},
           })
         } else {
           reject(error)

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest"
 import path from "path"
+import fs from "fs/promises"
 import { InstructionPrompt } from "../../src/session/instruction"
 import { Instance } from "../../src/project/instance"
 import { Global } from "../../src/global"

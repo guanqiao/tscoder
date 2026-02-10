@@ -1,4 +1,4 @@
-import { test, expect, describe, mock, afterEach } from "vitest"
+import { test, expect, describe, vi, afterEach } from "vitest"
 import { Config } from "../../src/config/config"
 import { Instance } from "../../src/project/instance"
 import { Auth } from "../../src/auth"
@@ -1448,7 +1448,7 @@ test("local .opencode config can override MCP from project config", async () => 
 test("project config overrides remote well-known config", async () => {
   const originalFetch = globalThis.fetch
   let fetchedUrl: string | undefined
-  const mockFetch = mock((url: string | URL | Request) => {
+  const mockFetch = vi.fn((url: string | URL | Request) => {
     const urlStr = url.toString()
     if (urlStr.includes(".well-known/opencode")) {
       fetchedUrl = urlStr
@@ -1474,7 +1474,7 @@ test("project config overrides remote well-known config", async () => {
   globalThis.fetch = mockFetch as unknown as typeof fetch
 
   const originalAuthAll = Auth.all
-  Auth.all = mock(() =>
+  Auth.all = vi.fn(() =>
     Promise.resolve({
       "https://example.com": {
         type: "wellknown" as const,
