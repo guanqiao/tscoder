@@ -29,8 +29,9 @@ import {
 } from "@agentclientprotocol/sdk"
 
 import { Log } from "../util/log"
-import { pathToFileURL } from "bun"
+import { pathToFileURL } from "url"
 import { ACPSessionManager } from "./session"
+import { file } from "@/platform"
 import type { ACPConfig } from "./types"
 import { Provider } from "../provider/provider"
 import { Agent as AgentModule } from "../agent/agent"
@@ -229,7 +230,7 @@ export namespace ACP {
                 const filepath = typeof metadata["filepath"] === "string" ? metadata["filepath"] : ""
                 const diff = typeof metadata["diff"] === "string" ? metadata["diff"] : ""
 
-                const content = await Bun.file(filepath).text()
+                const content = await file(filepath).text()
                 const newContent = getNewContent(content, diff)
 
                 if (newContent) {
@@ -946,10 +947,10 @@ export namespace ACP {
           // Replay file attachments as appropriate ACP content blocks.
           // OpenCode stores files internally as { type: "file", url, filename, mime }.
           // We convert these back to ACP blocks based on the URL scheme and MIME type:
-          // - file:// URLs â†?resource_link
-          // - data: URLs with image/* â†?image block
-          // - data: URLs with text/* or application/json â†?resource with text
-          // - data: URLs with other types â†?resource with blob
+          // - file:// URLs ï¿½?resource_link
+          // - data: URLs with image/* ï¿½?image block
+          // - data: URLs with text/* or application/json ï¿½?resource with text
+          // - data: URLs with other types ï¿½?resource with blob
           const url = part.url
           const filename = part.filename ?? "file"
           const mime = part.mime || "application/octet-stream"

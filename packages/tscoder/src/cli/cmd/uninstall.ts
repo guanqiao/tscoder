@@ -7,6 +7,7 @@ import { $ } from "bun"
 import fs from "fs/promises"
 import path from "path"
 import os from "os"
+import { file, writeFile } from "@/platform"
 
 interface UninstallArgs {
   keepConfig: boolean
@@ -113,17 +114,17 @@ async function showRemovalSummary(targets: RemovalTargets, method: Installation.
     const size = await getDirectorySize(dir.path)
     const sizeStr = formatSize(size)
     const status = dir.keep ? UI.Style.TEXT_DIM + "(keeping)" : ""
-    const prefix = dir.keep ? "â—? : "âœ?
+    const prefix = dir.keep ? "ï¿½? : "ï¿½?
 
     prompts.log.info(`  ${prefix} ${dir.label}: ${shortenPath(dir.path)} ${UI.Style.TEXT_DIM}(${sizeStr})${status}`)
   }
 
   if (targets.binary) {
-    prompts.log.info(`  âœ?Binary: ${shortenPath(targets.binary)}`)
+    prompts.log.info(`  ï¿½?Binary: ${shortenPath(targets.binary)}`)
   }
 
   if (targets.shellConfig) {
-    prompts.log.info(`  âœ?Shell PATH in ${shortenPath(targets.shellConfig)}`)
+    prompts.log.info(`  ï¿½?Shell PATH in ${shortenPath(targets.shellConfig)}`)
   }
 
   if (method !== "curl" && method !== "unknown") {
@@ -136,7 +137,7 @@ async function showRemovalSummary(targets: RemovalTargets, method: Installation.
       choco: "choco uninstall opencode",
       scoop: "scoop uninstall opencode",
     }
-    prompts.log.info(`  âœ?Package: ${cmds[method] || method}`)
+    prompts.log.info(`  ï¿½?Package: ${cmds[method] || method}`)
   }
 }
 
@@ -267,7 +268,7 @@ async function getShellConfigFile(): Promise<string | null> {
       .catch(() => false)
     if (!exists) continue
 
-    const content = await Bun.file(file)
+    const content = await file(file)
       .text()
       .catch(() => "")
     if (content.includes("# opencode") || content.includes(".opencode/bin")) {
@@ -278,8 +279,8 @@ async function getShellConfigFile(): Promise<string | null> {
   return null
 }
 
-async function cleanShellConfig(file: string) {
-  const content = await Bun.file(file).text()
+async function cleanShellConfig(filePath: string) {
+  const content = await file(filePath).text()
   const lines = content.split("\n")
 
   const filtered: string[] = []
@@ -315,7 +316,7 @@ async function cleanShellConfig(file: string) {
   }
 
   const output = filtered.join("\n") + "\n"
-  await Bun.write(file, output)
+  await writeFile(filePath, output)
 }
 
 async function getDirectorySize(dir: string): Promise<number> {
