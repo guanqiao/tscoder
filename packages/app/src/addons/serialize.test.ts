@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeAll, afterEach } from "bun:test"
+import { describe, test, expect, beforeAll, afterEach } from "vitest"
 import { Terminal, Ghostty } from "ghostty-web"
 import { SerializeAddon } from "./serialize"
 

@@ -1,4 +1,4 @@
-import { test, expect, describe } from "bun:test"
+import { test, expect, describe } from "vitest"
 import { extractResponseText } from "../../src/cli/cmd/github"
 import type { MessageV2 } from "../../src/session/message-v2"
 

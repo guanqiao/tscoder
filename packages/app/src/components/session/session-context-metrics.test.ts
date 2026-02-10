@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import type { Message } from "@tscoder/sdk/v2/client"
 import { getSessionContextMetrics } from "./session-context-metrics"
 

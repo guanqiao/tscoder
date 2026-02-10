@@ -1,4 +1,4 @@
-import { expect, test, describe } from "bun:test"
+import { expect, test, describe } from "vitest"
 import { ConfigMarkdown } from "../../src/config/markdown"
 
 describe("ConfigMarkdown: normal template", () => {

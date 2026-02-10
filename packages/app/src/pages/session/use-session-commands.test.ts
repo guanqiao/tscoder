@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { canAddSelectionContext } from "./session-command-helpers"
 
 describe("canAddSelectionContext", () => {

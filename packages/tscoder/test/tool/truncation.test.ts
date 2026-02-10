@@ -1,4 +1,4 @@
-import { describe, test, expect, afterAll } from "bun:test"
+import { describe, test, expect, afterAll } from "vitest"
 import { Truncate } from "../../src/tool/truncation"
 import { Identifier } from "../../src/id/id"
 import fs from "fs/promises"
@@ -139,13 +139,13 @@ describe("Truncate", () => {
       const oldTimestamp = Date.now() - 10 * DAY_MS
       const oldId = Identifier.create("tool", false, oldTimestamp)
       oldFile = path.join(Truncate.DIR, oldId)
-      await Bun.write(Bun.file(oldFile), "old content")
+      await fs.writeFile(Bun.file(oldFile), "old content")
 
       // Create a recent file (3 days ago)
       const recentTimestamp = Date.now() - 3 * DAY_MS
       const recentId = Identifier.create("tool", false, recentTimestamp)
       recentFile = path.join(Truncate.DIR, recentId)
-      await Bun.write(Bun.file(recentFile), "recent content")
+      await fs.writeFile(Bun.file(recentFile), "recent content")
 
       await Truncate.cleanup()
 

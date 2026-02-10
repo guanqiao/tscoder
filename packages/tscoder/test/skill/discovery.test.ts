@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test"
+import { describe, test, expect } from "vitest"
 import { Discovery } from "../../src/skill/discovery"
 import path from "path"
 

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { checkServerHealth } from "./server-health"
 
 function abortFromInput(input: RequestInfo | URL, init?: RequestInit) {

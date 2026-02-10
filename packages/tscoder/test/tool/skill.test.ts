@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import path from "path"
 import { pathToFileURL } from "url"
 import type { PermissionNext } from "../../src/permission/next"
@@ -23,7 +23,7 @@ describe("tool.skill", () => {
       git: true,
       init: async (dir) => {
         const skillDir = path.join(dir, ".opencode", "skill", "tool-skill")
-        await Bun.write(
+        await fs.writeFile(
           path.join(skillDir, "SKILL.md"),
           `---
 name: tool-skill
@@ -58,7 +58,7 @@ description: Skill for tool tests.
       git: true,
       init: async (dir) => {
         const skillDir = path.join(dir, ".opencode", "skill", "tool-skill")
-        await Bun.write(
+        await fs.writeFile(
           path.join(skillDir, "SKILL.md"),
           `---
 name: tool-skill
@@ -70,7 +70,7 @@ description: Skill for tool tests.
 Use this skill.
 `,
         )
-        await Bun.write(path.join(skillDir, "scripts", "demo.txt"), "demo")
+        await fs.writeFile(path.join(skillDir, "scripts", "demo.txt"), "demo")
       },
     })
 

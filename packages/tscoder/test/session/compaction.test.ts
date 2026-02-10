@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import path from "path"
 import { SessionCompaction } from "../../src/session/compaction"
 import { Token } from "../../src/util/token"
@@ -127,7 +127,7 @@ describe("session.compaction.isOverflow", () => {
   test("returns false when compaction.auto is disabled", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(
+        await fs.writeFile(
           path.join(dir, "opencode.json"),
           JSON.stringify({
             compaction: { auto: false },

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, test } from "vitest"
 import path from "path"
 import { InstructionPrompt } from "../../src/session/instruction"
 import { Instance } from "../../src/project/instance"
@@ -9,8 +9,8 @@ describe("InstructionPrompt.resolve", () => {
   test("returns empty when AGENTS.md is at project root (already in systemPaths)", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "AGENTS.md"), "# Root Instructions")
-        await Bun.write(path.join(dir, "src", "file.ts"), "const x = 1")
+        await fs.writeFile(path.join(dir, "AGENTS.md"), "# Root Instructions")
+        await fs.writeFile(path.join(dir, "src", "file.ts"), "const x = 1")
       },
     })
     await Instance.provide({
@@ -28,8 +28,8 @@ describe("InstructionPrompt.resolve", () => {
   test("returns AGENTS.md from subdirectory (not in systemPaths)", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "subdir", "AGENTS.md"), "# Subdir Instructions")
-        await Bun.write(path.join(dir, "subdir", "nested", "file.ts"), "const x = 1")
+        await fs.writeFile(path.join(dir, "subdir", "AGENTS.md"), "# Subdir Instructions")
+        await fs.writeFile(path.join(dir, "subdir", "nested", "file.ts"), "const x = 1")
       },
     })
     await Instance.provide({
@@ -52,8 +52,8 @@ describe("InstructionPrompt.resolve", () => {
   test("doesn't reload AGENTS.md when reading it directly", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "subdir", "AGENTS.md"), "# Subdir Instructions")
-        await Bun.write(path.join(dir, "subdir", "nested", "file.ts"), "const x = 1")
+        await fs.writeFile(path.join(dir, "subdir", "AGENTS.md"), "# Subdir Instructions")
+        await fs.writeFile(path.join(dir, "subdir", "nested", "file.ts"), "const x = 1")
       },
     })
     await Instance.provide({
@@ -88,12 +88,12 @@ describe("InstructionPrompt.systemPaths OPENCODE_CONFIG_DIR", () => {
   test("prefers OPENCODE_CONFIG_DIR AGENTS.md over global when both exist", async () => {
     await using profileTmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "AGENTS.md"), "# Profile Instructions")
+        await fs.writeFile(path.join(dir, "AGENTS.md"), "# Profile Instructions")
       },
     })
     await using globalTmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "AGENTS.md"), "# Global Instructions")
+        await fs.writeFile(path.join(dir, "AGENTS.md"), "# Global Instructions")
       },
     })
     await using projectTmp = await tmpdir()
@@ -120,7 +120,7 @@ describe("InstructionPrompt.systemPaths OPENCODE_CONFIG_DIR", () => {
     await using profileTmp = await tmpdir()
     await using globalTmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "AGENTS.md"), "# Global Instructions")
+        await fs.writeFile(path.join(dir, "AGENTS.md"), "# Global Instructions")
       },
     })
     await using projectTmp = await tmpdir()
@@ -146,7 +146,7 @@ describe("InstructionPrompt.systemPaths OPENCODE_CONFIG_DIR", () => {
   test("uses global AGENTS.md when OPENCODE_CONFIG_DIR is not set", async () => {
     await using globalTmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "AGENTS.md"), "# Global Instructions")
+        await fs.writeFile(path.join(dir, "AGENTS.md"), "# Global Instructions")
       },
     })
     await using projectTmp = await tmpdir()

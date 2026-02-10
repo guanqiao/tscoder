@@ -1,5 +1,5 @@
 import path from "path"
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { fileURLToPath } from "url"
 import { Instance } from "../../src/project/instance"
 import { Log } from "../../src/util/log"
@@ -15,7 +15,7 @@ describe("session.prompt special characters", () => {
     await using tmp = await tmpdir({
       git: true,
       init: async (dir) => {
-        await Bun.write(path.join(dir, "file#name.txt"), "special content\n")
+        await fs.writeFile(path.join(dir, "file#name.txt"), "special content\n")
       },
     })
 

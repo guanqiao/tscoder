@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { sidebarExpanded } from "./sidebar-shell-helpers"
 
 describe("sidebarExpanded", () => {

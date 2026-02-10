@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, test } from "bun:test"
+import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest"
 import path from "path"
 import type { ModelMessage } from "ai"
 import { LLM } from "../../src/session/llm"
@@ -242,7 +242,7 @@ describe("session.llm.stream", () => {
 
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(
+        await fs.writeFile(
           path.join(dir, "opencode.json"),
           JSON.stringify({
             $schema: "https://opencode.ai/config.json",
@@ -371,7 +371,7 @@ describe("session.llm.stream", () => {
 
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(
+        await fs.writeFile(
           path.join(dir, "opencode.json"),
           JSON.stringify({
             $schema: "https://opencode.ai/config.json",
@@ -505,7 +505,7 @@ describe("session.llm.stream", () => {
 
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(
+        await fs.writeFile(
           path.join(dir, "opencode.json"),
           JSON.stringify({
             $schema: "https://opencode.ai/config.json",
@@ -613,7 +613,7 @@ describe("session.llm.stream", () => {
 
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(
+        await fs.writeFile(
           path.join(dir, "opencode.json"),
           JSON.stringify({
             $schema: "https://opencode.ai/config.json",

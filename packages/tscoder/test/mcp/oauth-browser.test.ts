@@ -1,4 +1,4 @@
-import { test, expect, mock, beforeEach } from "bun:test"
+import { test, expect, mock, beforeEach } from "vitest"
 import { EventEmitter } from "events"
 
 // Track open() calls and control failure behavior
@@ -108,9 +108,8 @@ const { tmpdir } = await import("../fixture/fixture")
 test("BrowserOpenFailed event is published when open() throws", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
-        `${dir}/opencode.json`,
-        JSON.stringify({
+      await fs.writeFile(
+        `${dir}/opencode.json`, JSON.stringify({
           $schema: "https://opencode.ai/config.json",
           mcp: {
             "test-oauth-server": {
@@ -159,9 +158,8 @@ test("BrowserOpenFailed event is published when open() throws", async () => {
 test("BrowserOpenFailed event is NOT published when open() succeeds", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
-        `${dir}/opencode.json`,
-        JSON.stringify({
+      await fs.writeFile(
+        `${dir}/opencode.json`, JSON.stringify({
           $schema: "https://opencode.ai/config.json",
           mcp: {
             "test-oauth-server-2": {
@@ -208,9 +206,8 @@ test("BrowserOpenFailed event is NOT published when open() succeeds", async () =
 test("open() is called with the authorization URL", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
-        `${dir}/opencode.json`,
-        JSON.stringify({
+      await fs.writeFile(
+        `${dir}/opencode.json`, JSON.stringify({
           $schema: "https://opencode.ai/config.json",
           mcp: {
             "test-oauth-server-3": {

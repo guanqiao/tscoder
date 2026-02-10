@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import type { Prompt } from "@/context/prompt"
 import { clonePromptParts, navigatePromptHistory, prependHistoryEntry, promptLength } from "./history"
 

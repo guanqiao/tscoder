@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { projectSelected, projectTileActive } from "./sidebar-project-helpers"
 
 describe("projectSelected", () => {

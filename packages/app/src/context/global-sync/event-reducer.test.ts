@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import type { Message, Part, PermissionRequest, Project, QuestionRequest, Session } from "@tscoder/sdk/v2/client"
 import { createStore } from "solid-js/store"
 import type { State } from "./types"

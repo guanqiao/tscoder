@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import path from "path"
 import { ReadTool } from "../../src/tool/read"
 import { Instance } from "../../src/project/instance"
@@ -23,7 +23,7 @@ describe("tool.read external_directory permission", () => {
   test("allows reading absolute path inside project directory", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "test.txt"), "hello world")
+        await fs.writeFile(path.join(dir, "test.txt"), "hello world")
       },
     })
     await Instance.provide({
@@ -39,7 +39,7 @@ describe("tool.read external_directory permission", () => {
   test("allows reading file in subdirectory inside project directory", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "subdir", "test.txt"), "nested content")
+        await fs.writeFile(path.join(dir, "subdir", "test.txt"), "nested content")
       },
     })
     await Instance.provide({
@@ -55,7 +55,7 @@ describe("tool.read external_directory permission", () => {
   test("asks for external_directory permission when reading absolute path outside project", async () => {
     await using outerTmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "secret.txt"), "secret data")
+        await fs.writeFile(path.join(dir, "secret.txt"), "secret data")
       },
     })
     await using tmp = await tmpdir({ git: true })
@@ -103,7 +103,7 @@ describe("tool.read external_directory permission", () => {
     await using tmp = await tmpdir({
       git: true,
       init: async (dir) => {
-        await Bun.write(path.join(dir, "internal.txt"), "internal content")
+        await fs.writeFile(path.join(dir, "internal.txt"), "internal content")
       },
     })
     await Instance.provide({
@@ -139,7 +139,7 @@ describe("tool.read env file permissions", () => {
   describe.each(["build", "plan"])("agent=%s", (agentName) => {
     test.each(cases)("%s asks=%s", async (filename, shouldAsk) => {
       await using tmp = await tmpdir({
-        init: (dir) => Bun.write(path.join(dir, filename), "content"),
+        init: (dir) => fs.writeFile(path.join(dir, filename), "content"),
       })
       await Instance.provide({
         directory: tmp.path,
@@ -176,7 +176,7 @@ describe("tool.read truncation", () => {
         const base = await Bun.file(path.join(FIXTURES_DIR, "models-api.json")).text()
         const target = 60 * 1024
         const content = base.length >= target ? base : base.repeat(Math.ceil(target / base.length))
-        await Bun.write(path.join(dir, "large.json"), content)
+        await fs.writeFile(path.join(dir, "large.json"), content)
       },
     })
     await Instance.provide({
@@ -195,7 +195,7 @@ describe("tool.read truncation", () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
         const lines = Array.from({ length: 100 }, (_, i) => `line${i}`).join("\n")
-        await Bun.write(path.join(dir, "many-lines.txt"), lines)
+        await fs.writeFile(path.join(dir, "many-lines.txt"), lines)
       },
     })
     await Instance.provide({
@@ -215,7 +215,7 @@ describe("tool.read truncation", () => {
   test("does not truncate small file", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "small.txt"), "hello world")
+        await fs.writeFile(path.join(dir, "small.txt"), "hello world")
       },
     })
     await Instance.provide({
@@ -233,7 +233,7 @@ describe("tool.read truncation", () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
         const lines = Array.from({ length: 20 }, (_, i) => `line${i}`).join("\n")
-        await Bun.write(path.join(dir, "offset.txt"), lines)
+        await fs.writeFile(path.join(dir, "offset.txt"), lines)
       },
     })
     await Instance.provide({
@@ -253,7 +253,7 @@ describe("tool.read truncation", () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
         const longLine = "x".repeat(3000)
-        await Bun.write(path.join(dir, "long-line.txt"), longLine)
+        await fs.writeFile(path.join(dir, "long-line.txt"), longLine)
       },
     })
     await Instance.provide({
@@ -275,7 +275,7 @@ describe("tool.read truncation", () => {
           "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==",
           "base64",
         )
-        await Bun.write(path.join(dir, "image.png"), png)
+        await fs.writeFile(path.join(dir, "image.png"), png)
       },
     })
     await Instance.provide({
@@ -317,7 +317,7 @@ table Monster {
 }
 
 root_type Monster;`
-        await Bun.write(path.join(dir, "schema.fbs"), fbsContent)
+        await fs.writeFile(path.join(dir, "schema.fbs"), fbsContent)
       },
     })
     await Instance.provide({
@@ -338,8 +338,8 @@ describe("tool.read loaded instructions", () => {
   test("loads AGENTS.md from parent directory and includes in metadata", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "subdir", "AGENTS.md"), "# Test Instructions\nDo something special.")
-        await Bun.write(path.join(dir, "subdir", "nested", "test.txt"), "test content")
+        await fs.writeFile(path.join(dir, "subdir", "AGENTS.md"), "# Test Instructions\nDo something special.")
+        await fs.writeFile(path.join(dir, "subdir", "nested", "test.txt"), "test content")
       },
     })
     await Instance.provide({

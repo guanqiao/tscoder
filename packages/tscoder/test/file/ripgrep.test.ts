@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import fs from "fs/promises"
 import path from "path"
 import { tmpdir } from "../fixture/fixture"
@@ -8,9 +8,9 @@ describe("file.ripgrep", () => {
   test("defaults to include hidden", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "visible.txt"), "hello")
+        await fs.writeFile(path.join(dir, "visible.txt"), "hello")
         await fs.mkdir(path.join(dir, ".opencode"), { recursive: true })
-        await Bun.write(path.join(dir, ".opencode", "thing.json"), "{}")
+        await fs.writeFile(path.join(dir, ".opencode", "thing.json"), "{}")
       },
     })
 
@@ -24,9 +24,9 @@ describe("file.ripgrep", () => {
   test("hidden false excludes hidden", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "visible.txt"), "hello")
+        await fs.writeFile(path.join(dir, "visible.txt"), "hello")
         await fs.mkdir(path.join(dir, ".opencode"), { recursive: true })
-        await Bun.write(path.join(dir, ".opencode", "thing.json"), "{}")
+        await fs.writeFile(path.join(dir, ".opencode", "thing.json"), "{}")
       },
     })
 

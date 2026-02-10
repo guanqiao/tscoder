@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { test, expect } from "vitest"
 import path from "path"
 import { tmpdir } from "../fixture/fixture"
 import { Instance } from "../../src/project/instance"
@@ -519,7 +519,7 @@ test("skill directories are allowed for external_directory", async () => {
     git: true,
     init: async (dir) => {
       const skillDir = path.join(dir, ".opencode", "skill", "perm-skill")
-      await Bun.write(
+      await fs.writeFile(
         path.join(skillDir, "SKILL.md"),
         `---
 name: perm-skill

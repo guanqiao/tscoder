@@ -1,4 +1,4 @@
-import { test, expect, describe } from "bun:test"
+import { test, expect, describe } from "vitest"
 import path from "path"
 import fs from "fs/promises"
 import { Filesystem } from "../../src/util/filesystem"
@@ -44,7 +44,7 @@ describe("File.read path traversal protection", () => {
   test("rejects ../ traversal attempting to read /etc/passwd", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "allowed.txt"), "allowed content")
+        await fs.writeFile(path.join(dir, "allowed.txt"), "allowed content")
       },
     })
 
@@ -72,7 +72,7 @@ describe("File.read path traversal protection", () => {
   test("allows valid paths within project", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "valid.txt"), "valid content")
+        await fs.writeFile(path.join(dir, "valid.txt"), "valid content")
       },
     })
 
@@ -101,7 +101,7 @@ describe("File.list path traversal protection", () => {
   test("allows valid subdirectory listing", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "subdir", "file.txt"), "content")
+        await fs.writeFile(path.join(dir, "subdir", "file.txt"), "content")
       },
     })
 

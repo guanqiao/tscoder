@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { Scheduler } from "../src/scheduler"
 import { Instance } from "../src/project/instance"
 import { tmpdir } from "./fixture/fixture"

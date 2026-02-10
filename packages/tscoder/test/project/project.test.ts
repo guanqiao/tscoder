@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { Project } from "../../src/project/project"
 import { Log } from "../../src/util/log"
 import { Storage } from "../../src/storage/storage"
@@ -95,7 +95,7 @@ describe("Project.discover", () => {
     const { project } = await Project.fromDirectory(tmp.path)
 
     const pngData = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
-    await Bun.write(path.join(tmp.path, "favicon.png"), pngData)
+    await fs.writeFile(path.join(tmp.path, "favicon.png"), pngData)
 
     await Project.discover(project)
 
@@ -110,7 +110,7 @@ describe("Project.discover", () => {
     await using tmp = await tmpdir({ git: true })
     const { project } = await Project.fromDirectory(tmp.path)
 
-    await Bun.write(path.join(tmp.path, "favicon.txt"), "not an image")
+    await fs.writeFile(path.join(tmp.path, "favicon.txt"), "not an image")
 
     await Project.discover(project)
 

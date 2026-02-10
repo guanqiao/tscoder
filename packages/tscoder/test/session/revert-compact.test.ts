@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, afterEach } from "bun:test"
+import { describe, expect, test, beforeEach, afterEach } from "vitest"
 import path from "path"
 import { Session } from "../../src/session"
 import { SessionRevert } from "../../src/session/revert"

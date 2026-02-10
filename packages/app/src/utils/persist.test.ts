@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, mock, test } from "bun:test"
+import { beforeAll, beforeEach, describe, expect, mock, test } from "vitest"
 
 type PersistTestingType = typeof import("./persist").PersistTesting
 

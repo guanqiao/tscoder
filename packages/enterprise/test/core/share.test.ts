@@ -1,4 +1,4 @@
-import { describe, expect, test, afterAll } from "bun:test"
+import { describe, expect, test, afterAll } from "vitest"
 import { Share } from "../../src/core/share"
 import { Storage } from "../../src/core/storage"
 import { Identifier } from "@tscoder/util/identifier"

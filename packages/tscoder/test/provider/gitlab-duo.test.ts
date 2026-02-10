@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { test, expect } from "vitest"
 import path from "path"
 
 import { tmpdir } from "../fixture/fixture"
@@ -10,7 +10,7 @@ import { Global } from "../../src/global"
 test("GitLab Duo: loads provider with API key from environment", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
+      await fs.writeFile(
         path.join(dir, "opencode.json"),
         JSON.stringify({
           $schema: "https://opencode.ai/config.json",
@@ -34,7 +34,7 @@ test("GitLab Duo: loads provider with API key from environment", async () => {
 test("GitLab Duo: config instanceUrl option sets baseURL", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
+      await fs.writeFile(
         path.join(dir, "opencode.json"),
         JSON.stringify({
           $schema: "https://opencode.ai/config.json",
@@ -66,7 +66,7 @@ test("GitLab Duo: config instanceUrl option sets baseURL", async () => {
 test("GitLab Duo: loads with OAuth token from auth.json", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
+      await fs.writeFile(
         path.join(dir, "opencode.json"),
         JSON.stringify({
           $schema: "https://opencode.ai/config.json",
@@ -76,9 +76,8 @@ test("GitLab Duo: loads with OAuth token from auth.json", async () => {
   })
 
   const authPath = path.join(Global.Path.data, "auth.json")
-  await Bun.write(
-    authPath,
-    JSON.stringify({
+  await fs.writeFile(
+    authPath, JSON.stringify({
       gitlab: {
         type: "oauth",
         access: "test-access-token",
@@ -103,7 +102,7 @@ test("GitLab Duo: loads with OAuth token from auth.json", async () => {
 test("GitLab Duo: loads with Personal Access Token from auth.json", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
+      await fs.writeFile(
         path.join(dir, "opencode.json"),
         JSON.stringify({
           $schema: "https://opencode.ai/config.json",
@@ -113,9 +112,8 @@ test("GitLab Duo: loads with Personal Access Token from auth.json", async () => 
   })
 
   const authPath2 = path.join(Global.Path.data, "auth.json")
-  await Bun.write(
-    authPath2,
-    JSON.stringify({
+  await fs.writeFile(
+    authPath2, JSON.stringify({
       gitlab: {
         type: "api",
         key: "glpat-test-pat-token",
@@ -139,7 +137,7 @@ test("GitLab Duo: loads with Personal Access Token from auth.json", async () => 
 test("GitLab Duo: supports self-hosted instance configuration", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
+      await fs.writeFile(
         path.join(dir, "opencode.json"),
         JSON.stringify({
           $schema: "https://opencode.ai/config.json",
@@ -171,7 +169,7 @@ test("GitLab Duo: supports self-hosted instance configuration", async () => {
 test("GitLab Duo: config apiKey takes precedence over environment variable", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
+      await fs.writeFile(
         path.join(dir, "opencode.json"),
         JSON.stringify({
           $schema: "https://opencode.ai/config.json",
@@ -201,7 +199,7 @@ test("GitLab Duo: config apiKey takes precedence over environment variable", asy
 test("GitLab Duo: supports feature flags configuration", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
+      await fs.writeFile(
         path.join(dir, "opencode.json"),
         JSON.stringify({
           $schema: "https://opencode.ai/config.json",
@@ -236,7 +234,7 @@ test("GitLab Duo: supports feature flags configuration", async () => {
 test("GitLab Duo: has multiple agentic chat models available", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
+      await fs.writeFile(
         path.join(dir, "opencode.json"),
         JSON.stringify({
           $schema: "https://opencode.ai/config.json",

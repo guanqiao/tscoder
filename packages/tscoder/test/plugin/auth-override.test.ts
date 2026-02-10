@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import path from "path"
 import fs from "fs/promises"
 import { tmpdir } from "../fixture/fixture"
@@ -12,7 +12,7 @@ describe("plugin.auth-override", () => {
         const pluginDir = path.join(dir, ".opencode", "plugin")
         await fs.mkdir(pluginDir, { recursive: true })
 
-        await Bun.write(
+        await fs.writeFile(
           path.join(pluginDir, "custom-copilot-auth.ts"),
           [
             "export default async () => ({",

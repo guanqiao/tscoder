@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { test, expect } from "vitest"
 import { parseShareUrl, transformShareData, type ShareData } from "../../src/cli/cmd/import"
 
 // parseShareUrl tests

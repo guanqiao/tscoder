@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import path from "path"
 import { GrepTool } from "../../src/tool/grep"
 import { Instance } from "../../src/project/instance"
@@ -40,7 +40,7 @@ describe("tool.grep", () => {
   test("no matches returns correct output", async () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "test.txt"), "hello world")
+        await fs.writeFile(path.join(dir, "test.txt"), "hello world")
       },
     })
     await Instance.provide({
@@ -65,7 +65,7 @@ describe("tool.grep", () => {
     await using tmp = await tmpdir({
       init: async (dir) => {
         // Create a test file with content
-        await Bun.write(path.join(dir, "test.txt"), "line1\nline2\nline3")
+        await fs.writeFile(path.join(dir, "test.txt"), "line1\nline2\nline3")
       },
     })
     await Instance.provide({

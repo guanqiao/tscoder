@@ -1,5 +1,5 @@
 import { OpenAICompatibleChatLanguageModel } from "@/provider/sdk/copilot/chat/openai-compatible-chat-language-model"
-import { describe, test, expect, mock } from "bun:test"
+import { describe, test, expect, mock } from "vitest"
 import type { LanguageModelV2Prompt } from "@ai-sdk/provider"
 
 async function convertReadableStreamToArray<T>(stream: ReadableStream<T>): Promise<T[]> {

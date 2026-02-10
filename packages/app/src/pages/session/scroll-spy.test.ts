@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { createScrollSpy, pickOffsetId, pickVisibleId } from "./scroll-spy"
 
 const rect = (top: number, height = 80): DOMRect =>

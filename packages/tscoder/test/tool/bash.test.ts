@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import path from "path"
 import { BashTool } from "../../src/tool/bash"
 import { Instance } from "../../src/project/instance"
@@ -152,7 +152,7 @@ describe("tool.bash permissions", () => {
   test("asks for external_directory permission when file arg is outside project", async () => {
     await using outerTmp = await tmpdir({
       init: async (dir) => {
-        await Bun.write(path.join(dir, "outside.txt"), "x")
+        await fs.writeFile(path.join(dir, "outside.txt"), "x")
       },
     })
     await using tmp = await tmpdir({ git: true })
@@ -198,7 +198,7 @@ describe("tool.bash permissions", () => {
           },
         }
 
-        await Bun.write(path.join(tmp.path, "tmpfile"), "x")
+        await fs.writeFile(path.join(tmp.path, "tmpfile"), "x")
 
         await bash.execute(
           {

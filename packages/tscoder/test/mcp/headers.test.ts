@@ -1,4 +1,4 @@
-import { test, expect, mock, beforeEach } from "bun:test"
+import { test, expect, mock, beforeEach } from "vitest"
 
 // Track what options were passed to each transport constructor
 const transportCalls: Array<{
@@ -50,9 +50,8 @@ const { tmpdir } = await import("../fixture/fixture")
 test("headers are passed to transports when oauth is enabled (default)", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      await Bun.write(
-        `${dir}/opencode.json`,
-        JSON.stringify({
+      await fs.writeFile(
+        `${dir}/opencode.json`, JSON.stringify({
           $schema: "https://opencode.ai/config.json",
           mcp: {
             "test-server": {
