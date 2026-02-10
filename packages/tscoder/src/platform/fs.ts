@@ -8,6 +8,7 @@ export interface FileHandle {
   stat(): Promise<Stats>
   write(data: string | Buffer, options?: { mode?: number }): Promise<void>
   size(): Promise<number>
+  arrayBuffer(): Promise<ArrayBuffer>
 }
 
 export function file(path: string): FileHandle {
@@ -34,6 +35,10 @@ export function file(path: string): FileHandle {
       } catch {
         return 0
       }
+    },
+    arrayBuffer: async () => {
+      const buffer = await fs.readFile(path)
+      return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
     },
   }
 }

@@ -2,6 +2,7 @@ import path from "path"
 import fs from "fs/promises"
 import { Global } from "../global"
 import z from "zod"
+import { file, Glob } from "@/platform"
 
 export namespace Log {
   export const Level = z.enum(["DEBUG", "INFO", "WARN", "ERROR"]).meta({ ref: "LogLevel", description: "Log level" })
@@ -63,28 +64,27 @@ export namespace Log {
       Global.Path.log,
       options.dev ? "dev.log" : new Date().toISOString().split(".")[0].replace(/:/g, "") + ".log",
     )
-    const logfile = Bun.file(logpath)
+    const logfile = file(logpath)
     await fs.truncate(logpath).catch(() => {})
-    const writer = logfile.writer()
     write = async (msg: any) => {
-      const num = writer.write(msg)
-      writer.flush()
-      return num
+      await logfile.write(msg)
+      return msg.length
     }
   }
 
   async function cleanup(dir: string) {
-    const glob = new Bun.Glob("????-??-??T??????.log")
-    const files = await Array.fromAsync(
-      glob.scan({
-        cwd: dir,
-        absolute: true,
-      }),
-    )
+    const glob = new Glob("????-??-??T??????.log")
+    const files: string[] = []
+    for await (const f of glob.scan({
+      cwd: dir,
+      absolute: true,
+    })) {
+      files.push(f)
+    }
     if (files.length <= 5) return
 
     const filesToDelete = files.slice(0, -10)
-    await Promise.all(filesToDelete.map((file) => fs.unlink(file).catch(() => {})))
+    await Promise.all(filesToDelete.map((f) => fs.unlink(f).catch(() => {})))
   }
 
   function formatError(error: Error, depth = 0): string {

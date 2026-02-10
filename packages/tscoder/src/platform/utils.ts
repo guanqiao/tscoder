@@ -1,6 +1,52 @@
 import { execSync } from "child_process"
 import { createHash } from "crypto"
 
+// ANSI color codes
+const ANSI_COLORS: Record<string, string> = {
+  black: "\x1b[30m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  magenta: "\x1b[35m",
+  cyan: "\x1b[36m",
+  white: "\x1b[37m",
+  gray: "\x1b[90m",
+  grey: "\x1b[90m",
+  reset: "\x1b[0m",
+}
+
+export function stringWidth(str: string): number {
+  // Strip ANSI escape codes and calculate visible width
+  const stripped = str.replace(/\x1b\[[0-9;]*m/g, "")
+  let width = 0
+  for (const char of stripped) {
+    const code = char.codePointAt(0) ?? 0
+    // Check for full-width characters (CJK, etc.)
+    if (
+      (code >= 0x1100 && code <= 0x115f) || // Hangul Jamo
+      (code >= 0x2e80 && code <= 0xa4cf) || // CJK
+      (code >= 0xac00 && code <= 0xd7a3) || // Hangul Syllables
+      (code >= 0xf900 && code <= 0xfaff) || // CJK Compatibility Ideographs
+      (code >= 0xfe10 && code <= 0xfe19) || // Vertical forms
+      (code >= 0xfe30 && code <= 0xfe6f) || // CJK Compatibility Forms
+      (code >= 0xff00 && code <= 0xff60) || // Fullwidth Forms
+      (code >= 0xffe0 && code <= 0xffe6) || // Fullwidth Symbols
+      (code >= 0x1f300 && code <= 0x1f64f) // Emojis
+    ) {
+      width += 2
+    } else {
+      width += 1
+    }
+  }
+  return width
+}
+
+export function color(colorName: string, format: "ansi"): string | null {
+  if (format !== "ansi") return null
+  return ANSI_COLORS[colorName.toLowerCase()] ?? null
+}
+
 export function which(command: string, options?: { cwd?: string; PATH?: string }): string | null {
   const isWindows = process.platform === "win32"
   const pathExt = isWindows ? ".exe;.cmd;.bat;.com" : ""

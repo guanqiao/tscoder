@@ -1,7 +1,5 @@
 import { BusEvent } from "@/bus/bus-event"
 import z from "zod"
-import { $ } from "bun"
-import type { BunFile } from "bun"
 import { formatPatch, structuredPatch } from "diff"
 import path from "path"
 import fs from "fs"
@@ -12,6 +10,7 @@ import { Instance } from "../project/instance"
 import { Ripgrep } from "./ripgrep"
 import fuzzysort from "fuzzysort"
 import { Global } from "../global"
+import { $, file } from "@/platform"
 
 export namespace File {
   const log = Log.create({ service: "file" })
@@ -241,21 +240,18 @@ export namespace File {
     return mimeType.startsWith("image/")
   }
 
-  async function shouldEncode(file: BunFile): Promise<boolean> {
-    const type = file.type?.toLowerCase()
-    log.info("shouldEncode", { type })
-    if (!type) return false
-
-    if (type.startsWith("text/")) return false
-    if (type.includes("charset=")) return false
-
-    const parts = type.split("/", 2)
-    const top = parts[0]
-
-    const tops = ["image", "audio", "video", "font", "model", "multipart"]
-    if (tops.includes(top)) return true
-
-    return false
+  async function shouldEncode(filePath: string): Promise<boolean> {
+    // Check file extension to determine if it should be encoded
+    const ext = path.extname(filePath).toLowerCase()
+    const binaryExts = new Set([
+      ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg",
+      ".mp3", ".wav", ".ogg", ".flac", ".aac", ".wma", ".m4a",
+      ".mp4", ".avi", ".mov", ".wmv", ".mkv", ".flv",
+      ".woff", ".woff2", ".ttf", ".otf", ".eot",
+      ".pdf", ".zip", ".tar", ".gz", ".bz2", ".7z", ".rar",
+      ".exe", ".dll", ".so", ".dylib", ".bin"
+    ])
+    return binaryExts.has(ext)
   }
 
   export const Event = {
@@ -385,7 +381,7 @@ export namespace File {
       const untrackedFiles = untrackedOutput.trim().split("\n")
       for (const filepath of untrackedFiles) {
         try {
-          const content = await Bun.file(path.join(Instance.directory, filepath)).text()
+          const content = await file(path.join(Instance.directory, filepath)).text()
           const lines = content.split("\n").length
           changedFiles.push({
             path: filepath,
@@ -437,9 +433,9 @@ export namespace File {
 
     // Fast path: check extension before any filesystem operations
     if (isImageByExtension(file)) {
-      const bunFile = Bun.file(full)
-      if (await bunFile.exists()) {
-        const buffer = await bunFile.arrayBuffer().catch(() => new ArrayBuffer(0))
+      const f = file(full)
+      if (await f.exists()) {
+        const buffer = await f.arrayBuffer().catch(() => new ArrayBuffer(0))
         const content = Buffer.from(buffer).toString("base64")
         const mimeType = getImageMimeType(file)
         return { type: "text", content, mimeType, encoding: "base64" }
@@ -451,26 +447,26 @@ export namespace File {
       return { type: "binary", content: "" }
     }
 
-    const bunFile = Bun.file(full)
+    const f = file(full)
 
-    if (!(await bunFile.exists())) {
+    if (!(await f.exists())) {
       return { type: "text", content: "" }
     }
 
-    const encode = await shouldEncode(bunFile)
-    const mimeType = bunFile.type || "application/octet-stream"
+    const encode = await shouldEncode(full)
+    const mimeType = getImageMimeType(file) || "application/octet-stream"
 
     if (encode && !isImage(mimeType)) {
       return { type: "binary", content: "", mimeType }
     }
 
     if (encode) {
-      const buffer = await bunFile.arrayBuffer().catch(() => new ArrayBuffer(0))
+      const buffer = await f.arrayBuffer().catch(() => new ArrayBuffer(0))
       const content = Buffer.from(buffer).toString("base64")
       return { type: "text", content, mimeType, encoding: "base64" }
     }
 
-    const content = await bunFile
+    const content = await f
       .text()
       .catch(() => "")
       .then((x) => x.trim())
@@ -497,11 +493,11 @@ export namespace File {
     let ignored = (_: string) => false
     if (project.vcs === "git") {
       const ig = ignore()
-      const gitignore = Bun.file(path.join(Instance.worktree, ".gitignore"))
+      const gitignore = file(path.join(Instance.worktree, ".gitignore"))
       if (await gitignore.exists()) {
         ig.add(await gitignore.text())
       }
-      const ignoreFile = Bun.file(path.join(Instance.worktree, ".ignore"))
+      const ignoreFile = file(path.join(Instance.worktree, ".ignore"))
       if (await ignoreFile.exists()) {
         ig.add(await ignoreFile.text())
       }

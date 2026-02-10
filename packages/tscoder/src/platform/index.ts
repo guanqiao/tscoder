@@ -4,4 +4,5 @@
 export { file, writeFile, Glob, globScan, type FileHandle, type GlobOptions } from "./fs"
 export { $, ShellCommand, spawnAsync, streamToText, type ShellOptions, type ShellResult } from "./shell"
 export { serve, connect, type ServerOptions, type ServerInstance, type ConnectOptions } from "./server"
-export { which, sleep, resolve, hash, semver } from "./utils"
+export { which, sleep, resolve, hash, semver, stringWidth, color } from "./utils"
+export { stdio } from "./process"

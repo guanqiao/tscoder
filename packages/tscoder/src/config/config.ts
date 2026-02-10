@@ -40,6 +40,7 @@ import { Event } from "../server/event"
 import { PackageRegistry } from "@/bun/registry"
 import { proxied } from "@/util/proxied"
 import { iife } from "@/util/iife"
+import { file, writeFile, Glob } from "@/platform"
 
 export namespace Config {
   const ModelId = z.string().meta({ $ref: "https://models.dev/model-schema.json#/$defs/Model" })
@@ -258,19 +259,19 @@ export namespace Config {
     const pkg = path.join(dir, "package.json")
     const targetVersion = Installation.isLocal() ? "*" : Installation.VERSION
 
-    const json = await Bun.file(pkg)
+    const json = await file(pkg)
       .json()
       .catch(() => ({}))
     json.dependencies = {
       ...json.dependencies,
       "@tscoder/plugin": targetVersion,
     }
-    await Bun.write(pkg, JSON.stringify(json, null, 2))
+    await writeFile(pkg, JSON.stringify(json, null, 2))
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
     const gitignore = path.join(dir, ".gitignore")
-    const hasGitIgnore = await Bun.file(gitignore).exists()
-    if (!hasGitIgnore) await Bun.write(gitignore, ["node_modules", "package.json", "bun.lock", ".gitignore"].join("\n"))
+    const hasGitIgnore = await file(gitignore).exists()
+    if (!hasGitIgnore) await writeFile(gitignore, ["node_modules", "package.json", "bun.lock", ".gitignore"].join("\n"))
 
     // Install any additional dependencies defined in the package.json
     // This allows local plugins and custom tools to use external packages
@@ -306,11 +307,11 @@ export namespace Config {
     if (!existsSync(nodeModules)) return true
 
     const pkg = path.join(dir, "package.json")
-    const pkgFile = Bun.file(pkg)
-    const pkgExists = await pkgFile.exists()
+    const pkgF = file(pkg)
+    const pkgExists = await pkgF.exists()
     if (!pkgExists) return true
 
-    const parsed = await pkgFile.json().catch(() => null)
+    const parsed = await pkgF.json().catch(() => null)
     const dependencies = parsed?.dependencies ?? {}
     const depVersion = dependencies["@tscoder/plugin"]
     if (!depVersion) return true
@@ -342,7 +343,7 @@ export namespace Config {
     return ext.length ? file.slice(0, -ext.length) : file
   }
 
-  const COMMAND_GLOB = new Bun.Glob("{command,commands}/**/*.md")
+  const COMMAND_GLOB = new Glob("{command,commands}/**/*.md")
   async function loadCommand(dir: string) {
     const result: Record<string, Command> = {}
     for await (const item of COMMAND_GLOB.scan({
@@ -381,7 +382,7 @@ export namespace Config {
     return result
   }
 
-  const AGENT_GLOB = new Bun.Glob("{agent,agents}/**/*.md")
+  const AGENT_GLOB = new Glob("{agent,agents}/**/*.md")
   async function loadAgent(dir: string) {
     const result: Record<string, Agent> = {}
 
@@ -421,7 +422,7 @@ export namespace Config {
     return result
   }
 
-  const MODE_GLOB = new Bun.Glob("{mode,modes}/*.md")
+  const MODE_GLOB = new Glob("{mode,modes}/*.md")
   async function loadMode(dir: string) {
     const result: Record<string, Agent> = {}
     for await (const item of MODE_GLOB.scan({
@@ -458,7 +459,7 @@ export namespace Config {
     return result
   }
 
-  const PLUGIN_GLOB = new Bun.Glob("{plugin,plugins}/*.{ts,js}")
+  const PLUGIN_GLOB = new Glob("{plugin,plugins}/*.{ts,js}")
   async function loadPlugin(dir: string) {
     const plugins: string[] = []
 
@@ -1197,7 +1198,7 @@ export namespace Config {
           if (provider && model) result.model = `${provider}/${model}`
           result["$schema"] = SCHEMA_URL
           result = mergeDeep(result, rest)
-          await Bun.write(path.join(Global.Path.config, "config.json"), JSON.stringify(result, null, 2))
+          await writeFile(path.join(Global.Path.config, "config.json"), JSON.stringify(result, null, 2))
           await fs.unlink(legacy)
         })
         .catch(() => {})
@@ -1208,7 +1209,7 @@ export namespace Config {
 
   async function loadFile(filepath: string): Promise<Info> {
     log.info("loading", { path: filepath })
-    let text = await Bun.file(filepath)
+    let text = await file(filepath)
       .text()
       .catch((err) => {
         if (err.code === "ENOENT") return
@@ -1240,7 +1241,7 @@ export namespace Config {
         }
         const resolvedPath = path.isAbsolute(filePath) ? filePath : path.resolve(configDir, filePath)
         const fileContent = (
-          await Bun.file(resolvedPath)
+          await file(resolvedPath)
             .text()
             .catch((error) => {
               const errMsg = `bad file reference: "${match}"`
@@ -1291,7 +1292,7 @@ export namespace Config {
         parsed.data.$schema = SCHEMA_URL
         // Write the $schema to the original text to preserve variables like {env:VAR}
         const updated = original.replace(/^\s*\{/, `{\n  "$schema": "${SCHEMA_URL}",`)
-        await Bun.write(configFilepath, updated).catch(() => {})
+        await writeFile(configFilepath, updated).catch(() => {})
       }
       const data = parsed.data
       if (data.plugin) {
@@ -1347,7 +1348,7 @@ export namespace Config {
   export async function update(config: Info) {
     const filepath = path.join(Instance.directory, "config.json")
     const existing = await loadFile(filepath)
-    await Bun.write(filepath, JSON.stringify(mergeDeep(existing, config), null, 2))
+    await writeFile(filepath, JSON.stringify(mergeDeep(existing, config), null, 2))
     await Instance.dispose()
   }
 
@@ -1418,7 +1419,7 @@ export namespace Config {
 
   export async function updateGlobal(config: Info) {
     const filepath = globalConfigFile()
-    const before = await Bun.file(filepath)
+    const before = await file(filepath)
       .text()
       .catch((err) => {
         if (err.code === "ENOENT") return "{}"
@@ -1429,13 +1430,13 @@ export namespace Config {
       if (!filepath.endsWith(".jsonc")) {
         const existing = parseConfig(before, filepath)
         const merged = mergeDeep(existing, config)
-        await Bun.write(filepath, JSON.stringify(merged, null, 2))
+        await writeFile(filepath, JSON.stringify(merged, null, 2))
         return merged
       }
 
       const updated = patchJsonc(before, config)
       const merged = parseConfig(updated, filepath)
-      await Bun.write(filepath, updated)
+      await writeFile(filepath, updated)
       return merged
     })()
 
