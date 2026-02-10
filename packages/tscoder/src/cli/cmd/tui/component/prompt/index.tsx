@@ -786,8 +786,8 @@ export function Prompt(props: PromptProps) {
           borderColor={highlight()}
           customBorderChars={{
             ...EmptyBorder,
-            vertical: "\u2502",
-            bottomLeft: "\u2514",
+            vertical: "│",
+            bottomLeft: "└",
           }}
         >
           <box
@@ -1006,7 +1006,7 @@ export function Prompt(props: PromptProps) {
           borderColor={highlight()}
           customBorderChars={{
             ...EmptyBorder,
-            vertical: theme.backgroundElement.a !== 0 ? "\u2502" : " ",
+            vertical: theme.backgroundElement.a !== 0 ? "│" : " ",
           }}
         >
           <box

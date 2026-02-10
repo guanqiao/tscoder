@@ -230,8 +230,8 @@ export function Session() {
     return exit.message.set(
       [
         ``,
-        `  \u2588\u252C\u252C\u2518 ${UI.Style.TEXT_DIM}${title}${UI.Style.TEXT_NORMAL}`,
-        `  \u2502 \u25B6 ${UI.Style.TEXT_DIM}opencode -s ${session()?.id}${UI.Style.TEXT_NORMAL}`,
+        `  █╟╟╝ ${UI.Style.TEXT_DIM}${title}${UI.Style.TEXT_NORMAL}`,
+        `  │ ▶ ${UI.Style.TEXT_DIM}opencode -s ${session()?.id}${UI.Style.TEXT_NORMAL}`,
         `  ▀▀▀▀  `,
       ].join("\n"),
     )
@@ -1636,7 +1636,7 @@ function Bash(props: ToolProps<typeof BashTool>) {
   const overflow = createMemo(() => lines().length > 10)
   const limited = createMemo(() => {
     if (expanded() || !overflow()) return output()
-    return [...lines().slice(0, 10), "\u2026"].join("\n")
+    return [...lines().slice(0, 10), "…"].join("\n")
   })
 
   const workdirDisplay = createMemo(() => {
@@ -1767,7 +1767,7 @@ function Read(props: ToolProps<typeof ReadTool>) {
         {(filepath) => (
           <box paddingLeft={3}>
             <text paddingLeft={3} fg={theme.textMuted}>
-              \u2713 Loaded {normalizePath(filepath)}
+              ✓ Loaded {normalizePath(filepath)}
             </text>
           </box>
         )}
@@ -1872,7 +1872,7 @@ function Task(props: ToolProps<typeof TaskTool>) {
                 const title = item().state.status === "completed" ? (item().state as any).title : ""
                 return (
                   <text style={{ fg: item().state.status === "error" ? theme.error : theme.textMuted }}>
-                    \u26A1 {Locale.titlecase(item().tool)} {title}
+                    ⚡ {Locale.titlecase(item().tool)} {title}
                   </text>
                 )
               }}
@@ -1919,7 +1919,7 @@ function Edit(props: ToolProps<typeof EditTool>) {
   return (
     <Switch>
       <Match when={props.metadata.diff !== undefined}>
-        <BlockTool title={"\u270F Edit " + normalizePath(props.input.filePath!)} part={props.part}>
+        <BlockTool title={"✏️ Edit " + normalizePath(props.input.filePath!)} part={props.part}>
           <box paddingLeft={1}>
             <diff
               diff={diffContent()}
@@ -1956,7 +1956,7 @@ function Edit(props: ToolProps<typeof EditTool>) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="\u270F" pending="Preparing edit..." complete={props.input.filePath} part={props.part}>
+        <InlineTool icon="✏️" pending="Preparing edit..." complete={props.input.filePath} part={props.part}>
           Edit {normalizePath(props.input.filePath!)} {input({ replaceAll: props.input.replaceAll })}
         </InlineTool>
       </Match>
@@ -2006,7 +2006,7 @@ function ApplyPatch(props: ToolProps<typeof ApplyPatchTool>) {
     if (file.type === "delete") return "# Deleted " + file.relativePath
     if (file.type === "add") return "# Created " + file.relativePath
     if (file.type === "move") return "# Moved " + normalizePath(file.filePath) + " -> " + file.relativePath
-    return "\u270F Patched " + file.relativePath
+    return "✏️ Patched " + file.relativePath
   }
 
   return (
@@ -2051,7 +2051,7 @@ function TodoWrite(props: ToolProps<typeof TodoWriteTool>) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="\u270F" pending="Updating todos..." complete={false} part={props.part}>
+        <InlineTool icon="✏️" pending="Updating todos..." complete={false} part={props.part}>
           Updating todos...
         </InlineTool>
       </Match>
@@ -2085,7 +2085,7 @@ function Question(props: ToolProps<typeof QuestionTool>) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="\u2753" pending="Asking questions..." complete={count()} part={props.part}>
+        <InlineTool icon="❓" pending="Asking questions..." complete={count()} part={props.part}>
           Asked {count()} question{count() !== 1 ? "s" : ""}
         </InlineTool>
       </Match>
