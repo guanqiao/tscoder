@@ -1,5 +1,5 @@
-import { $ } from "bun"
 import path from "path"
+import { $ } from "@/platform"
 
 export namespace Archive {
   export async function extractZip(zipPath: string, destDir: string) {

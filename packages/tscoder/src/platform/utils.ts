@@ -1,0 +1,103 @@
+import { execSync } from "child_process"
+import { createHash } from "crypto"
+
+export function which(command: string, options?: { cwd?: string; PATH?: string }): string | null {
+  const isWindows = process.platform === "win32"
+  const pathExt = isWindows ? ".exe;.cmd;.bat;.com" : ""
+  const pathSep = isWindows ? ";" : ":"
+  
+  const searchPaths = options?.PATH
+    ? options.PATH.split(pathSep)
+    : process.env.PATH?.split(pathSep) ?? []
+  
+  const extensions = isWindows ? pathExt.split(";") : [""]
+  
+  for (const dir of searchPaths) {
+    for (const ext of extensions) {
+      const fullPath = `${dir}/${command}${ext}`
+      try {
+        // Check if file exists and is executable
+        const stats = require("fs").statSync(fullPath)
+        if (stats.isFile()) {
+          return fullPath
+        }
+      } catch {
+        // File doesn't exist or can't be accessed
+      }
+    }
+  }
+  
+  return null
+}
+
+export function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+export function resolve(moduleId: string, from?: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    try {
+      const resolved = require.resolve(moduleId, from ? { paths: [from] } : undefined)
+      resolve(resolved)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export namespace hash {
+  export function xxHash32(input: string | Buffer): number {
+    // Use Node.js crypto as a fallback for xxHash32
+    // Note: This is not exactly xxHash32, but provides similar functionality
+    const hash = createHash("md5")
+    hash.update(input)
+    const hex = hash.digest("hex")
+    // Convert first 8 chars of hex to number (similar to 32-bit hash)
+    return parseInt(hex.slice(0, 8), 16)
+  }
+}
+
+export namespace semver {
+  export function satisfies(version: string, range: string): boolean {
+    // Simple semver satisfies implementation
+    // For production use, consider using the 'semver' npm package
+    const [ver] = version.split("-")
+    const [major, minor, patch] = ver.split(".").map(Number)
+    
+    // Handle ^x.y.z
+    if (range.startsWith("^")) {
+      const [rMajor, rMinor, rPatch] = range.slice(1).split(".").map(Number)
+      if (major !== rMajor) return false
+      if (minor < rMinor) return false
+      if (minor === rMinor && patch < rPatch) return false
+      return true
+    }
+    
+    // Handle ~x.y.z
+    if (range.startsWith("~")) {
+      const [rMajor, rMinor, rPatch] = range.slice(1).split(".").map(Number)
+      if (major !== rMajor) return false
+      if (minor !== rMinor) return false
+      if (patch < rPatch) return false
+      return true
+    }
+    
+    // Handle exact version
+    return version === range
+  }
+  
+  export function order(a: string, b: string): number {
+    const parse = (v: string) => {
+      const [ver] = v.split("-")
+      return ver.split(".").map(Number)
+    }
+    
+    const [aMajor, aMinor, aPatch] = parse(a)
+    const [bMajor, bMinor, bPatch] = parse(b)
+    
+    if (aMajor !== bMajor) return aMajor < bMajor ? -1 : 1
+    if (aMinor !== bMinor) return aMinor < bMinor ? -1 : 1
+    if (aPatch !== bPatch) return aPatch < bPatch ? -1 : 1
+    return 0
+  }
+}

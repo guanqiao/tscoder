@@ -1,18 +1,19 @@
 import { realpathSync } from "fs"
 import { dirname, join, relative } from "path"
+import { file, Glob } from "@/platform"
 
 export namespace Filesystem {
-  export const exists = (p: string) =>
-    Bun.file(p)
-      .stat()
-      .then(() => true)
-      .catch(() => false)
+  export const exists = (p: string) => file(p).exists()
 
-  export const isDir = (p: string) =>
-    Bun.file(p)
-      .stat()
-      .then((s) => s.isDirectory())
-      .catch(() => false)
+  export const isDir = async (p: string) => {
+    try {
+      const s = await file(p).stat()
+      return s.isDirectory()
+    } catch {
+      return false
+    }
+  }
+
   /**
    * On Windows, normalize a path to its canonical casing using the filesystem.
    * This is needed because Windows paths are case-insensitive but LSP servers
@@ -26,6 +27,7 @@ export namespace Filesystem {
       return p
     }
   }
+
   export function overlaps(a: string, b: string) {
     const relA = relative(a, b)
     const relB = relative(b, a)
@@ -70,7 +72,7 @@ export namespace Filesystem {
     const result = []
     while (true) {
       try {
-        const glob = new Bun.Glob(pattern)
+        const glob = new Glob(pattern)
         for await (const match of glob.scan({
           cwd: current,
           absolute: true,
