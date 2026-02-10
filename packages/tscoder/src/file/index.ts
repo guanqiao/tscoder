@@ -420,10 +420,10 @@ export namespace File {
     }))
   }
 
-  export async function read(file: string): Promise<Content> {
-    using _ = log.time("read", { file })
+  export async function read(filepath: string): Promise<Content> {
+    using _ = log.time("read", { file: filepath })
     const project = Instance.project
-    const full = path.join(Instance.directory, file)
+    const full = path.join(Instance.directory, filepath)
 
     // TODO: Filesystem.contains is lexical only - symlinks inside the project can escape.
     // TODO: On Windows, cross-drive paths bypass this check. Consider realpath canonicalization.
@@ -432,18 +432,18 @@ export namespace File {
     }
 
     // Fast path: check extension before any filesystem operations
-    if (isImageByExtension(file)) {
+    if (isImageByExtension(filepath)) {
       const f = file(full)
       if (await f.exists()) {
         const buffer = await f.arrayBuffer().catch(() => new ArrayBuffer(0))
         const content = Buffer.from(buffer).toString("base64")
-        const mimeType = getImageMimeType(file)
+        const mimeType = getImageMimeType(filepath)
         return { type: "text", content, mimeType, encoding: "base64" }
       }
       return { type: "text", content: "" }
     }
 
-    if (isBinaryByExtension(file)) {
+    if (isBinaryByExtension(filepath)) {
       return { type: "binary", content: "" }
     }
 
@@ -454,7 +454,7 @@ export namespace File {
     }
 
     const encode = await shouldEncode(full)
-    const mimeType = getImageMimeType(file) || "application/octet-stream"
+    const mimeType = getImageMimeType(filepath) || "application/octet-stream"
 
     if (encode && !isImage(mimeType)) {
       return { type: "binary", content: "", mimeType }
@@ -472,11 +472,11 @@ export namespace File {
       .then((x) => x.trim())
 
     if (project.vcs === "git") {
-      let diff = await $`git diff ${file}`.cwd(Instance.directory).quiet().nothrow().text()
-      if (!diff.trim()) diff = await $`git diff --staged ${file}`.cwd(Instance.directory).quiet().nothrow().text()
+      let diff = await $`git diff ${filepath}`.cwd(Instance.directory).quiet().nothrow().text()
+      if (!diff.trim()) diff = await $`git diff --staged ${filepath}`.cwd(Instance.directory).quiet().nothrow().text()
       if (diff.trim()) {
-        const original = await $`git show HEAD:${file}`.cwd(Instance.directory).quiet().nothrow().text()
-        const patch = structuredPatch(file, file, original, content, "old", "new", {
+        const original = await $`git show HEAD:${filepath}`.cwd(Instance.directory).quiet().nothrow().text()
+        const patch = structuredPatch(filepath, filepath, original, content, "old", "new", {
           context: Infinity,
           ignoreWhitespace: true,
         })

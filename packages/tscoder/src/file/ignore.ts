@@ -69,7 +69,9 @@ export namespace FileIgnore {
       if (glob.match(filepath)) return false
     }
 
-    const parts = filepath.split(sep)
+    // Normalize path separators for cross-platform compatibility
+    const normalizedPath = filepath.replace(/\\/g, "/")
+    const parts = normalizedPath.split("/")
     for (let i = 0; i < parts.length; i++) {
       if (FOLDERS.has(parts[i])) return true
     }
