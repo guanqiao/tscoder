@@ -7,6 +7,7 @@ import { Storage } from "../../storage/storage"
 import { Instance } from "../../project/instance"
 import { ShareNext } from "../../share/share-next"
 import { EOL } from "os"
+import { file } from "@/platform"
 
 /** Discriminated union returned by the ShareNext API (GET /api/share/:id/data) */
 export type ShareData =
@@ -115,8 +116,8 @@ export const ImportCommand = cmd({
 
         exportData = transformed
       } else {
-        const file = Bun.file(args.file)
-        exportData = await file.json().catch(() => {})
+        const fileHandle = file(args.file)
+        exportData = await fileHandle.json().catch(() => {})
         if (!exportData) {
           process.stdout.write(`File not found: ${args.file}`)
           process.stdout.write(EOL)

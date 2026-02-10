@@ -7,6 +7,7 @@ import { Locale } from "../../util/locale"
 import { Flag } from "../../flag/flag"
 import { EOL } from "os"
 import path from "path"
+import { file, which, spawnAsync } from "@/platform"
 
 function pagerCmd(): string[] {
   const lessOptions = ["-R", "-S"]
@@ -15,20 +16,20 @@ function pagerCmd(): string[] {
   }
 
   // user could have less installed via other options
-  const lessOnPath = Bun.which("less")
+  const lessOnPath = which("less")
   if (lessOnPath) {
-    if (Bun.file(lessOnPath).size) return [lessOnPath, ...lessOptions]
+    if (file(lessOnPath).size) return [lessOnPath, ...lessOptions]
   }
 
   if (Flag.OPENCODE_GIT_BASH_PATH) {
     const less = path.join(Flag.OPENCODE_GIT_BASH_PATH, "..", "..", "usr", "bin", "less.exe")
-    if (Bun.file(less).size) return [less, ...lessOptions]
+    if (file(less).size) return [less, ...lessOptions]
   }
 
-  const git = Bun.which("git")
+  const git = which("git")
   if (git) {
     const less = path.join(git, "..", "..", "usr", "bin", "less.exe")
-    if (Bun.file(less).size) return [less, ...lessOptions]
+    if (file(less).size) return [less, ...lessOptions]
   }
 
   // Fall back to Windows built-in more (via cmd.exe)
@@ -86,15 +87,14 @@ export const SessionListCommand = cmd({
       const shouldPaginate = process.stdout.isTTY && !args.maxCount && args.format === "table"
 
       if (shouldPaginate) {
-        const proc = Bun.spawn({
-          cmd: pagerCmd(),
+        const proc = spawnAsync(pagerCmd(), {
           stdin: "pipe",
           stdout: "inherit",
           stderr: "inherit",
         })
 
-        proc.stdin.write(output)
-        proc.stdin.end()
+        proc.stdin?.write(output)
+        proc.stdin?.end()
         await proc.exited
       } else {
         console.log(output)

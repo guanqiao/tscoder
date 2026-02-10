@@ -11,6 +11,7 @@ import { Global } from "../../global"
 import { Plugin } from "../../plugin"
 import { Instance } from "../../project/instance"
 import type { Hooks } from "@tscoder/plugin"
+import { sleep, spawnAsync } from "@/platform"
 
 type PluginAuth = NonNullable<Hooks["auth"]>
 
@@ -36,7 +37,7 @@ async function handlePluginAuth(plugin: { auth: PluginAuth }, provider: string):
   const method = plugin.auth.methods[index]
 
   // Handle prompts for all auth types
-  await Bun.sleep(10)
+  await sleep(10)
   const inputs: Record<string, string> = {}
   if (method.prompts) {
     for (const prompt of method.prompts) {
@@ -231,7 +232,7 @@ export const AuthLoginCommand = cmd({
         if (args.url) {
           const wellknown = await fetch(`${args.url}/.well-known/opencode`).then((x) => x.json() as any)
           prompts.log.info(`Running \`${wellknown.auth.command.join(" ")}\``)
-          const proc = Bun.spawn({
+          const proc = spawnAsync({
             cmd: wellknown.auth.command,
             stdout: "pipe",
           })
@@ -241,7 +242,7 @@ export const AuthLoginCommand = cmd({
             prompts.outro("Done")
             return
           }
-          const token = await new Response(proc.stdout).text()
+          const token = await new Response(proc.stdout!).text()
           await Auth.set(args.url, {
             type: "wellknown",
             key: wellknown.auth.env,

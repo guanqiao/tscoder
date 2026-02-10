@@ -1,6 +1,6 @@
 import type { Argv } from "yargs"
 import path from "path"
-import { pathToFileURL } from "bun"
+import { pathToFileURL } from "url"
 import { UI } from "../ui"
 import { cmd } from "./cmd"
 import { Flag } from "../../flag/flag"
@@ -26,6 +26,7 @@ import { SkillTool } from "../../tool/skill"
 import { BashTool } from "../../tool/bash"
 import { TodoWriteTool } from "../../tool/todo"
 import { Locale } from "../../util/locale"
+import { file, stdio } from "@/platform"
 
 type ToolProps<T extends Tool.Info> = {
   input: Tool.InferParameters<T>
@@ -68,7 +69,7 @@ function fallback(part: ToolPart) {
     ("title" in state && state.title ? state.title : undefined) ||
     (input && typeof input === "object" && Object.keys(input).length > 0 ? JSON.stringify(input) : "Unknown")
   inline({
-    icon: "âš?,
+    icon: "ï¿½?,
     title: `${part.tool} ${title}`,
   })
 }
@@ -81,7 +82,7 @@ function glob(info: ToolProps<typeof GlobTool>) {
   const description =
     num === undefined ? suffix : `${suffix}${suffix ? " Â· " : ""}${num} ${num === 1 ? "match" : "matches"}`
   inline({
-    icon: "âœ?,
+    icon: "ï¿½?,
     title,
     ...(description && { description }),
   })
@@ -95,7 +96,7 @@ function grep(info: ToolProps<typeof GrepTool>) {
   const description =
     num === undefined ? suffix : `${suffix}${suffix ? " Â· " : ""}${num} ${num === 1 ? "match" : "matches"}`
   inline({
-    icon: "âœ?,
+    icon: "ï¿½?,
     title,
     ...(description && { description }),
   })
@@ -104,7 +105,7 @@ function grep(info: ToolProps<typeof GrepTool>) {
 function list(info: ToolProps<typeof ListTool>) {
   const dir = info.input.path ? normalizePath(info.input.path) : ""
   inline({
-    icon: "â†?,
+    icon: "ï¿½?,
     title: dir ? `List ${dir}` : "List",
   })
 }
@@ -117,7 +118,7 @@ function read(info: ToolProps<typeof ReadTool>) {
   })
   const description = pairs.length ? `[${pairs.map(([key, value]) => `${key}=${value}`).join(", ")}]` : undefined
   inline({
-    icon: "â†?,
+    icon: "ï¿½?,
     title: `Read ${file}`,
     ...(description && { description }),
   })
@@ -126,7 +127,7 @@ function read(info: ToolProps<typeof ReadTool>) {
 function write(info: ToolProps<typeof WriteTool>) {
   block(
     {
-      icon: "â†?,
+      icon: "ï¿½?,
       title: `Write ${normalizePath(info.input.filePath)}`,
     },
     info.part.state.status === "completed" ? info.part.state.output : undefined,
@@ -145,7 +146,7 @@ function edit(info: ToolProps<typeof EditTool>) {
   const diff = info.metadata.diff
   block(
     {
-      icon: "â†?,
+      icon: "ï¿½?,
       title: `Edit ${title}`,
     },
     diff,
@@ -154,14 +155,14 @@ function edit(info: ToolProps<typeof EditTool>) {
 
 function codesearch(info: ToolProps<typeof CodeSearchTool>) {
   inline({
-    icon: "â—?,
+    icon: "ï¿½?,
     title: `Exa Code Search "${info.input.query}"`,
   })
 }
 
 function websearch(info: ToolProps<typeof WebSearchTool>) {
   inline({
-    icon: "â—?,
+    icon: "ï¿½?,
     title: `Exa Web Search "${info.input.query}"`,
   })
 }
@@ -172,7 +173,7 @@ function task(info: ToolProps<typeof TaskTool>) {
   const started = info.part.state.status === "running"
   const name = desc ?? `${agent} Task`
   inline({
-    icon: started ? "â€? : "âœ?,
+    icon: started ? "ï¿½? : "ï¿½?,
     title: name,
     description: desc ? `${agent} Agent` : undefined,
   })
@@ -180,7 +181,7 @@ function task(info: ToolProps<typeof TaskTool>) {
 
 function skill(info: ToolProps<typeof SkillTool>) {
   inline({
-    icon: "â†?,
+    icon: "ï¿½?,
     title: `Skill "${info.input.name}"`,
   })
 }
@@ -299,18 +300,18 @@ export const RunCommand = cmd({
 
       for (const filePath of list) {
         const resolvedPath = path.resolve(process.cwd(), filePath)
-        const file = Bun.file(resolvedPath)
-        const stats = await file.stat().catch(() => {})
+        const fileHandle = file(resolvedPath)
+        const stats = await fileHandle.stat().catch(() => {})
         if (!stats) {
           UI.error(`File not found: ${filePath}`)
           process.exit(1)
         }
-        if (!(await file.exists())) {
+        if (!(await fileHandle.exists())) {
           UI.error(`File not found: ${filePath}`)
           process.exit(1)
         }
 
-        const stat = await file.stat()
+        const stat = await fileHandle.stat()
         const mime = stat.isDirectory() ? "application/x-directory" : "text/plain"
 
         files.push({
@@ -322,7 +323,7 @@ export const RunCommand = cmd({
       }
     }
 
-    if (!process.stdin.isTTY) message += "\n" + (await Bun.stdin.text())
+    if (!process.stdin.isTTY) message += "\n" + (await stdio.stdin.text())
 
     if (message.trim().length === 0 && !args.command) {
       UI.error("You must provide a message or a command")
