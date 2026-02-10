@@ -65,7 +65,7 @@ function EditBody(props: { request: PermissionRequest }) {
   return (
     <box flexDirection="column" gap={1}>
       <box flexDirection="row" gap={1} paddingLeft={1}>
-        <text fg={theme.textMuted}>{"‚Ü?}</text>
+        <text fg={theme.textMuted}>üìù</text>
         <text fg={theme.textMuted}>Edit {normalizePath(filepath())}</text>
       </box>
       <Show when={diff()}>
@@ -203,16 +203,16 @@ export function PermissionPrompt(props: { request: PermissionRequest }) {
                     <EditBody request={props.request} />
                   </Match>
                   <Match when={props.request.permission === "read"}>
-                    <TextBody icon="‚Ü? title={`Read ` + normalizePath(input().filePath as string)} />
+                    <TextBody icon="üìñ" title={`Read ` + normalizePath(input().filePath as string)} />
                   </Match>
                   <Match when={props.request.permission === "glob"}>
-                    <TextBody icon="‚ú? title={`Glob "` + (input().pattern ?? "") + `"`} />
+                    <TextBody icon="üîç" title={`Glob \"` + (input().pattern ?? "") + `\"`} />
                   </Match>
                   <Match when={props.request.permission === "grep"}>
-                    <TextBody icon="‚ú? title={`Grep "` + (input().pattern ?? "") + `"`} />
+                    <TextBody icon="üîé" title={`Grep \"` + (input().pattern ?? "") + `\"`} />
                   </Match>
                   <Match when={props.request.permission === "list"}>
-                    <TextBody icon="‚Ü? title={`List ` + normalizePath(input().path as string)} />
+                    <TextBody icon="üìã" title={`List ` + normalizePath(input().path as string)} />
                   </Match>
                   <Match when={props.request.permission === "bash"}>
                     <TextBody
@@ -225,17 +225,17 @@ export function PermissionPrompt(props: { request: PermissionRequest }) {
                     <TextBody
                       icon="#"
                       title={`${Locale.titlecase((input().subagent_type as string) ?? "Unknown")} Task`}
-                      description={"‚ó?" + input().description}
+                      description={"üìã " + input().description}
                     />
                   </Match>
                   <Match when={props.request.permission === "webfetch"}>
                     <TextBody icon="%" title={`WebFetch ` + (input().url ?? "")} />
                   </Match>
                   <Match when={props.request.permission === "websearch"}>
-                    <TextBody icon="‚ó? title={`Exa Web Search "` + (input().query ?? "") + `"`} />
+                    <TextBody icon="üåê" title={`Exa Web Search \"` + (input().query ?? "") + `\"`} />
                   </Match>
                   <Match when={props.request.permission === "codesearch"}>
-                    <TextBody icon="‚ó? title={`Exa Code Search "` + (input().query ?? "") + `"`} />
+                    <TextBody icon="üîç" title={`Exa Code Search \"` + (input().query ?? "") + `\"`} />
                   </Match>
                   <Match when={props.request.permission === "external_directory"}>
                     {(() => {
@@ -253,14 +253,14 @@ export function PermissionPrompt(props: { request: PermissionRequest }) {
                       const raw = parent ?? filepath ?? derived
                       const dir = normalizePath(raw)
 
-                      return <TextBody icon="‚Ü? title={`Access external directory ` + dir} />
+                      return <TextBody icon="üìÅ" title={`Access external directory ` + dir} />
                     })()}
                   </Match>
                   <Match when={props.request.permission === "doom_loop"}>
-                    <TextBody icon="‚ü? title="Continue after repeated failures" />
+                    <TextBody icon="üîÑ" title="Continue after repeated failures" />
                   </Match>
                   <Match when={true}>
-                    <TextBody icon="‚ö? title={`Call tool ` + props.request.permission} />
+                    <TextBody icon="‚öôÔ∏è" title={`Call tool ` + props.request.permission} />
                   </Match>
                 </Switch>
               }
@@ -330,7 +330,7 @@ function RejectPrompt(props: { onConfirm: (message: string) => void; onCancel: (
     >
       <box gap={1} paddingLeft={1} paddingRight={3} paddingTop={1} paddingBottom={1}>
         <box flexDirection="row" gap={1} paddingLeft={1}>
-          <text fg={theme.error}>{"‚ñ?}</text>
+          <text fg={theme.error}>‚ùå</text>
           <text fg={theme.text}>Reject permission</text>
         </box>
         <box paddingLeft={1}>
@@ -446,7 +446,7 @@ function Prompt<const T extends Record<string, string>>(props: {
     >
       <box gap={1} paddingLeft={1} paddingRight={3} paddingTop={1} paddingBottom={1} flexGrow={1}>
         <box flexDirection="row" gap={1} paddingLeft={1} flexShrink={0}>
-          <text fg={theme.warning}>{"‚ñ?}</text>
+          <text fg={theme.warning}>‚ö†Ô∏è</text>
           <text fg={theme.text}>{props.title}</text>
         </box>
         {props.body}
@@ -490,7 +490,7 @@ function Prompt<const T extends Record<string, string>>(props: {
             </text>
           </Show>
           <text fg={theme.text}>
-            {"‚á?} <span style={{ fg: theme.textMuted }}>select</span>
+            {"‚¨Ü‚¨á"} <span style={{ fg: theme.textMuted }}>select</span>
           </text>
           <text fg={theme.text}>
             enter <span style={{ fg: theme.textMuted }}>confirm</span>

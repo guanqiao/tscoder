@@ -311,7 +311,7 @@ export function createFrames(options: KnightRiderOptions = {}): string[] {
       const index = calculateColorIndex(frameIndex, charIndex, width, trailOptions)
 
       if (style === "diamonds") {
-        const shapes = ["â¬?, "â—?, "â¬?, "â¬?]
+        const shapes = ["â—†", "â—‡", "â—ˆ", "â—‹"]
         if (index >= 0 && index < trailOptions.colors.length) {
           return shapes[Math.min(index, shapes.length - 1)]
         }
@@ -321,7 +321,7 @@ export function createFrames(options: KnightRiderOptions = {}): string[] {
       // Default to blocks
       // It's active if we have a valid color index that is within our colors array
       const isActive = index >= 0 && index < trailOptions.colors.length
-      return isActive ? "â–? : "â¬?
+      return isActive ? "â–ˆ" : "â–‘"
     }).join("")
   })
 

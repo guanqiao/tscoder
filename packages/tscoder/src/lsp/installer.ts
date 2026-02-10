@@ -601,9 +601,9 @@ export namespace LSPInstaller {
       results.set(pkg.id, success)
       
       if (success) {
-        log.info(`�?${pkg.name} installed successfully`)
+        log.info(`\u2713 ${pkg.name} installed successfully`)
       } else {
-        log.error(`�?${pkg.name} installation failed`)
+        log.error(`\u2717 ${pkg.name} installation failed`)
       }
     }
     

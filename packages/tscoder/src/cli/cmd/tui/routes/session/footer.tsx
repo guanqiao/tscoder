@@ -62,21 +62,21 @@ export function Footer() {
           <Match when={connected()}>
             <Show when={permissions().length > 0}>
               <text fg={theme.warning}>
-                <span style={{ fg: theme.warning }}>‚ñ?/span> {permissions().length} Permission
+                <span style={{ fg: theme.warning }}>‚ö†Ô∏è</span> {permissions().length} Permission
                 {permissions().length > 1 ? "s" : ""}
               </text>
             </Show>
             <text fg={theme.text}>
-              <span style={{ fg: lsp().length > 0 ? theme.success : theme.textMuted }}>‚Ä?/span> {lsp().length} LSP
+              <span style={{ fg: lsp().length > 0 ? theme.success : theme.textMuted }}>üîß</span> {lsp().length} LSP
             </text>
             <Show when={mcp()}>
               <text fg={theme.text}>
                 <Switch>
                   <Match when={mcpError()}>
-                    <span style={{ fg: theme.error }}>‚ä?</span>
+                    <span style={{ fg: theme.error }}>‚ùå</span>
                   </Match>
                   <Match when={true}>
-                    <span style={{ fg: theme.success }}>‚ä?</span>
+                    <span style={{ fg: theme.success }}>‚úÖ</span>
                   </Match>
                 </Switch>
                 {mcp()} MCP

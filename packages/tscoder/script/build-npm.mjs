@@ -56,6 +56,7 @@ try {
     "@gitlab/opencode-gitlab-auth",
     "@gitlab/gitlab-ai-provider",
     "web-tree-sitter",
+    "bun-pty",
   ].map(e => `--external:${e}`).join(" ")
   execSync(`npx esbuild ./src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=${path.join(distDir, "index.js")} --sourcemap ${externals}`, {
     cwd: dir,

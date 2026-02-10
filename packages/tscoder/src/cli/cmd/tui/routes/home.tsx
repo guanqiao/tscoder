@@ -119,10 +119,10 @@ export function Home() {
             <text fg={theme.text}>
               <Switch>
                 <Match when={mcpError()}>
-                  <span style={{ fg: theme.error }}>�?</span>
+                  <span style={{ fg: theme.error }}>\u2717</span>
                 </Match>
                 <Match when={true}>
-                  <span style={{ fg: connectedMcpCount() > 0 ? theme.success : theme.textMuted }}>�?</span>
+                  <span style={{ fg: connectedMcpCount() > 0 ? theme.success : theme.textMuted }}>\u2713</span>
                 </Match>
               </Switch>
               {connectedMcpCount()} MCP

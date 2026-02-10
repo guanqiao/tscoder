@@ -106,7 +106,7 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
                   onMouseDown={() => mcpEntries().length > 2 && setExpanded("mcp", !expanded.mcp)}
                 >
                   <Show when={mcpEntries().length > 2}>
-                    <text fg={theme.text}>{expanded.mcp ? "‚ñ? : "‚ñ?}</text>
+                    <text fg={theme.text}>{expanded.mcp ? "‚ñº" : "‚ñ∂"}</text>
                   </Show>
                   <text fg={theme.text}>
                     <b>MCP</b>
@@ -137,7 +137,7 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
                             )[item.status],
                           }}
                         >
-                          ‚Ä?
+                          {item.status === "connected" ? "‚úì" : item.status === "failed" ? "‚úó" : item.status === "needs_auth" ? "‚ö†Ô∏è" : item.status === "needs_client_registration" ? "‚ùå" : "-"}
                         </text>
                         <text fg={theme.text} wrapMode="word">
                           {key}{" "}
@@ -166,8 +166,8 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
                 onMouseDown={() => sync.data.lsp.length > 2 && setExpanded("lsp", !expanded.lsp)}
               >
                 <Show when={sync.data.lsp.length > 2}>
-                  <text fg={theme.text}>{expanded.lsp ? "‚ñ? : "‚ñ?}</text>
-                </Show>
+                    <text fg={theme.text}>{expanded.lsp ? "‚ñº" : "‚ñ∂"}</text>
+                  </Show>
                 <text fg={theme.text}>
                   <b>LSP</b>
                 </text>
@@ -192,7 +192,7 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
                           }[item.status],
                         }}
                       >
-                        ‚Ä?
+                        {item.status === "connected" ? "‚úì" : item.status === "error" ? "‚úó" : "-"}
                       </text>
                       <text fg={theme.textMuted}>
                         {item.id} {item.root}
@@ -210,7 +210,7 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
                   onMouseDown={() => todo().length > 2 && setExpanded("todo", !expanded.todo)}
                 >
                   <Show when={todo().length > 2}>
-                    <text fg={theme.text}>{expanded.todo ? "‚ñ? : "‚ñ?}</text>
+                    <text fg={theme.text}>{expanded.todo ? "‚ñº" : "‚ñ∂"}</text>
                   </Show>
                   <text fg={theme.text}>
                     <b>Todo</b>
@@ -229,7 +229,7 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
                   onMouseDown={() => diff().length > 2 && setExpanded("diff", !expanded.diff)}
                 >
                   <Show when={diff().length > 2}>
-                    <text fg={theme.text}>{expanded.diff ? "‚ñ? : "‚ñ?}</text>
+                    <text fg={theme.text}>{expanded.diff ? "‚ñº" : "‚ñ∂"}</text>
                   </Show>
                   <text fg={theme.text}>
                     <b>Modified Files</b>
@@ -273,7 +273,7 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
               gap={1}
             >
               <text flexShrink={0} fg={theme.text}>
-                ‚¨?
+                üìã
               </text>
               <box flexGrow={1} gap={1}>
                 <box flexDirection="row" justifyContent="space-between">
@@ -281,7 +281,7 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
                     <b>Getting started</b>
                   </text>
                   <text fg={theme.textMuted} onMouseDown={() => kv.set("dismissed_getting_started", true)}>
-                    ‚ú?
+                    ‚úï
                   </text>
                 </box>
                 <text fg={theme.textMuted}>OpenCode includes free models so you can start immediately.</text>
@@ -300,7 +300,7 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
             <span style={{ fg: theme.text }}>{directory().split("/").at(-1)}</span>
           </text>
           <text fg={theme.textMuted}>
-            <span style={{ fg: theme.success }}>‚Ä?/span> <b>Open</b>
+            <span style={{ fg: theme.success }}>‚úì</span> <b>Open</b>
             <span style={{ fg: theme.text }}>
               <b>Code</b>
             </span>{" "}

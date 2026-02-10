@@ -1,6 +1,6 @@
 import { promises as fs, type Stats } from "fs"
 import path from "path"
-import { glob, type Options as GlobOptions } from "fast-glob"
+import { glob as fastGlob, type Options as FastGlobOptions } from "fast-glob"
 import { minimatch } from "minimatch"
 
 export interface FileHandle {
@@ -79,7 +79,7 @@ export class Glob {
   }
 
   async* scan(options: GlobOptions = {}): AsyncGenerator<string> {
-    const entries = await glob(this.pattern, {
+    const entries = await fastGlob(this.pattern, {
       cwd: options.cwd,
       absolute: options.absolute,
       onlyFiles: options.onlyFiles ?? true,
@@ -96,7 +96,7 @@ export async function* globScan(
   pattern: string,
   options: GlobOptions = {}
 ): AsyncGenerator<string> {
-  const entries = await glob(pattern, {
+  const entries = await fastGlob(pattern, {
     cwd: options.cwd,
     absolute: options.absolute,
     onlyFiles: options.onlyFiles ?? true,
@@ -106,4 +106,17 @@ export async function* globScan(
   for (const entry of entries) {
     yield entry
   }
+}
+
+export async function glob(
+  pattern: string | string[],
+  options: GlobOptions = {}
+): Promise<string[]> {
+  return fastGlob(pattern, {
+    cwd: options.cwd,
+    absolute: options.absolute,
+    onlyFiles: options.onlyFiles ?? true,
+    followSymbolicLinks: options.followSymlinks ?? true,
+    dot: options.dot ?? true,
+  })
 }

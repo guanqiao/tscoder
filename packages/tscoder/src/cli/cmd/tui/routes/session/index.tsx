@@ -230,8 +230,8 @@ export function Session() {
     return exit.message.set(
       [
         ``,
-        `  █▀▀�? ${UI.Style.TEXT_DIM}${title}${UI.Style.TEXT_NORMAL}`,
-        `  �? �? ${UI.Style.TEXT_DIM}opencode -s ${session()?.id}${UI.Style.TEXT_NORMAL}`,
+        `  \u2588\u252C\u252C\u2518 ${UI.Style.TEXT_DIM}${title}${UI.Style.TEXT_NORMAL}`,
+        `  \u2502 \u25B6 ${UI.Style.TEXT_DIM}opencode -s ${session()?.id}${UI.Style.TEXT_NORMAL}`,
         `  ▀▀▀▀  `,
       ].join("\n"),
     )
@@ -1489,7 +1489,7 @@ type ToolProps<T extends Tool.Info> = {
 }
 function GenericTool(props: ToolProps<any>) {
   return (
-    <InlineTool icon="�? pending="Writing command..." complete={true} part={props.part}>
+    <InlineTool icon="\u{1F527}" pending="Writing command..." complete={true} part={props.part}>
       {props.tool} {input(props.input)}
     </InlineTool>
   )
@@ -1636,7 +1636,7 @@ function Bash(props: ToolProps<typeof BashTool>) {
   const overflow = createMemo(() => lines().length > 10)
   const limited = createMemo(() => {
     if (expanded() || !overflow()) return output()
-    return [...lines().slice(0, 10), "�?].join("\n")
+    return [...lines().slice(0, 10), "\u2026"].join("\n")
   })
 
   const workdirDisplay = createMemo(() => {
@@ -1730,7 +1730,7 @@ function Write(props: ToolProps<typeof WriteTool>) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="�? pending="Preparing write..." complete={props.input.filePath} part={props.part}>
+        <InlineTool icon="\u{1F4DD}" pending="Preparing write..." complete={props.input.filePath} part={props.part}>
           Write {normalizePath(props.input.filePath!)}
         </InlineTool>
       </Match>
@@ -1740,7 +1740,7 @@ function Write(props: ToolProps<typeof WriteTool>) {
 
 function Glob(props: ToolProps<typeof GlobTool>) {
   return (
-    <InlineTool icon="�? pending="Finding files..." complete={props.input.pattern} part={props.part}>
+    <InlineTool icon="\u{1F4C1}" pending="Finding files..." complete={props.input.pattern} part={props.part}>
       Glob "{props.input.pattern}" <Show when={props.input.path}>in {normalizePath(props.input.path)} </Show>
       <Show when={props.metadata.count}>
         ({props.metadata.count} {props.metadata.count === 1 ? "match" : "matches"})
@@ -1760,14 +1760,14 @@ function Read(props: ToolProps<typeof ReadTool>) {
   })
   return (
     <>
-      <InlineTool icon="�? pending="Reading file..." complete={props.input.filePath} part={props.part}>
+      <InlineTool icon="\u{1F4C4}" pending="Reading file..." complete={props.input.filePath} part={props.part}>
         Read {normalizePath(props.input.filePath!)} {input(props.input, ["filePath"])}
       </InlineTool>
       <For each={loaded()}>
         {(filepath) => (
           <box paddingLeft={3}>
             <text paddingLeft={3} fg={theme.textMuted}>
-              �?Loaded {normalizePath(filepath)}
+              \u2713 Loaded {normalizePath(filepath)}
             </text>
           </box>
         )}
@@ -1778,7 +1778,7 @@ function Read(props: ToolProps<typeof ReadTool>) {
 
 function Grep(props: ToolProps<typeof GrepTool>) {
   return (
-    <InlineTool icon="�? pending="Searching content..." complete={props.input.pattern} part={props.part}>
+    <InlineTool icon="\u{1F50D}" pending="Searching content..." complete={props.input.pattern} part={props.part}>
       Grep "{props.input.pattern}" <Show when={props.input.path}>in {normalizePath(props.input.path)} </Show>
       <Show when={props.metadata.matches}>
         ({props.metadata.matches} {props.metadata.matches === 1 ? "match" : "matches"})
@@ -1795,7 +1795,7 @@ function List(props: ToolProps<typeof ListTool>) {
     return ""
   })
   return (
-    <InlineTool icon="�? pending="Listing directory..." complete={props.input.path !== undefined} part={props.part}>
+    <InlineTool icon="\u{1F4C2}" pending="Listing directory..." complete={props.input.path !== undefined} part={props.part}>
       List {dir()}
     </InlineTool>
   )
@@ -1813,7 +1813,7 @@ function CodeSearch(props: ToolProps<any>) {
   const input = props.input as any
   const metadata = props.metadata as any
   return (
-    <InlineTool icon="�? pending="Searching code..." complete={input.query} part={props.part}>
+    <InlineTool icon="\u{1F50E}" pending="Searching code..." complete={input.query} part={props.part}>
       Exa Code Search "{input.query}" <Show when={metadata.results}>({metadata.results} results)</Show>
     </InlineTool>
   )
@@ -1823,7 +1823,7 @@ function WebSearch(props: ToolProps<any>) {
   const input = props.input as any
   const metadata = props.metadata as any
   return (
-    <InlineTool icon="�? pending="Searching web..." complete={input.query} part={props.part}>
+    <InlineTool icon="\u{1F310}" pending="Searching web..." complete={input.query} part={props.part}>
       Exa Web Search "{input.query}" <Show when={metadata.numResults}>({metadata.numResults} results)</Show>
     </InlineTool>
   )
@@ -1872,7 +1872,7 @@ function Task(props: ToolProps<typeof TaskTool>) {
                 const title = item().state.status === "completed" ? (item().state as any).title : ""
                 return (
                   <text style={{ fg: item().state.status === "error" ? theme.error : theme.textMuted }}>
-                    �?{Locale.titlecase(item().tool)} {title}
+                    \u26A1 {Locale.titlecase(item().tool)} {title}
                   </text>
                 )
               }}
@@ -1919,7 +1919,7 @@ function Edit(props: ToolProps<typeof EditTool>) {
   return (
     <Switch>
       <Match when={props.metadata.diff !== undefined}>
-        <BlockTool title={"�?Edit " + normalizePath(props.input.filePath!)} part={props.part}>
+        <BlockTool title={"\u270F Edit " + normalizePath(props.input.filePath!)} part={props.part}>
           <box paddingLeft={1}>
             <diff
               diff={diffContent()}
@@ -1956,7 +1956,7 @@ function Edit(props: ToolProps<typeof EditTool>) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="�? pending="Preparing edit..." complete={props.input.filePath} part={props.part}>
+        <InlineTool icon="\u270F" pending="Preparing edit..." complete={props.input.filePath} part={props.part}>
           Edit {normalizePath(props.input.filePath!)} {input({ replaceAll: props.input.replaceAll })}
         </InlineTool>
       </Match>
@@ -2005,8 +2005,8 @@ function ApplyPatch(props: ToolProps<typeof ApplyPatchTool>) {
   function title(file: { type: string; relativePath: string; filePath: string; deletions: number }) {
     if (file.type === "delete") return "# Deleted " + file.relativePath
     if (file.type === "add") return "# Created " + file.relativePath
-    if (file.type === "move") return "# Moved " + normalizePath(file.filePath) + " �?" + file.relativePath
-    return "�?Patched " + file.relativePath
+    if (file.type === "move") return "# Moved " + normalizePath(file.filePath) + " -> " + file.relativePath
+    return "\u270F Patched " + file.relativePath
   }
 
   return (
@@ -2051,7 +2051,7 @@ function TodoWrite(props: ToolProps<typeof TodoWriteTool>) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="�? pending="Updating todos..." complete={false} part={props.part}>
+        <InlineTool icon="\u270F" pending="Updating todos..." complete={false} part={props.part}>
           Updating todos...
         </InlineTool>
       </Match>
@@ -2085,7 +2085,7 @@ function Question(props: ToolProps<typeof QuestionTool>) {
         </BlockTool>
       </Match>
       <Match when={true}>
-        <InlineTool icon="�? pending="Asking questions..." complete={count()} part={props.part}>
+        <InlineTool icon="\u2753" pending="Asking questions..." complete={count()} part={props.part}>
           Asked {count()} question{count() !== 1 ? "s" : ""}
         </InlineTool>
       </Match>
@@ -2095,7 +2095,7 @@ function Question(props: ToolProps<typeof QuestionTool>) {
 
 function Skill(props: ToolProps<typeof SkillTool>) {
   return (
-    <InlineTool icon="�? pending="Loading skill..." complete={props.input.name} part={props.part}>
+    <InlineTool icon="\u{1F3AF}" pending="Loading skill..." complete={props.input.name} part={props.part}>
       Skill "{props.input.name}"
     </InlineTool>
   )

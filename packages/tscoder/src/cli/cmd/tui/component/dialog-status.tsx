@@ -79,7 +79,7 @@ export function DialogStatus() {
                     )[item.status],
                   }}
                 >
-                  �?
+                  \u25CF
                 </text>
                 <text fg={theme.text} wrapMode="word">
                   <b>{key}</b>{" "}
@@ -117,7 +117,7 @@ export function DialogStatus() {
                     }[item.status],
                   }}
                 >
-                  �?
+                  \u25CF
                 </text>
                 <text fg={theme.text} wrapMode="word">
                   <b>{item.id}</b> <span style={{ fg: theme.textMuted }}>{item.root}</span>
@@ -139,7 +139,7 @@ export function DialogStatus() {
                     fg: theme.success,
                   }}
                 >
-                  �?
+                  \u2713
                 </text>
                 <text wrapMode="word" fg={theme.text}>
                   <b>{item.name}</b>
@@ -161,7 +161,7 @@ export function DialogStatus() {
                     fg: theme.success,
                   }}
                 >
-                  �?
+                  \u2713
                 </text>
                 <text wrapMode="word" fg={theme.text}>
                   <b>{item.name}</b>
