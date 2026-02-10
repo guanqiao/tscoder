@@ -15,9 +15,9 @@
     "customConditions": ["browser"],
     "paths": {
       "@/*": ["./src/*"],
-      "@tui/*": ["./src/cli/cmd/tui/*"]
-    },
-    "baseUrl": "."
+      "@tui/*": ["./src/cli/cmd/tui/*"],
+      "*": ["./*"]
+    }
   },
   "include": ["src/**/*", "test/**/*"]
 }
