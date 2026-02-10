@@ -9,6 +9,7 @@ import { Instance } from "../project/instance"
 import { Identifier } from "../id/id"
 import { assertExternalDirectory } from "./external-directory"
 import { InstructionPrompt } from "../session/instruction"
+import { file, type FileHandle } from "@/platform"
 
 const DEFAULT_READ_LIMIT = 2000
 const MAX_LINE_LENGTH = 2000
@@ -39,8 +40,8 @@ export const ReadTool = Tool.define("read", {
       metadata: {},
     })
 
-    const file = Bun.file(filepath)
-    if (!(await file.exists())) {
+    const fileHandle = file(filepath)
+    if (!(await fileHandle.exists())) {
       const dir = path.dirname(filepath)
       const base = path.basename(filepath)
 
@@ -63,12 +64,29 @@ export const ReadTool = Tool.define("read", {
     const instructions = await InstructionPrompt.resolve(ctx.messages, filepath, ctx.messageID)
 
     // Exclude SVG (XML-based) and vnd.fastbidsheet (.fbs extension, commonly FlatBuffers schema files)
+    // Get file mime type from extension
+    const ext = path.extname(filepath).toLowerCase()
+    const mimeTypes: Record<string, string> = {
+      ".png": "image/png",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".gif": "image/gif",
+      ".webp": "image/webp",
+      ".bmp": "image/bmp",
+      ".svg": "image/svg+xml",
+      ".pdf": "application/pdf",
+    }
+    const mimeType = mimeTypes[ext] || "application/octet-stream"
     const isImage =
-      file.type.startsWith("image/") && file.type !== "image/svg+xml" && file.type !== "image/vnd.fastbidsheet"
-    const isPdf = file.type === "application/pdf"
+      mimeType.startsWith("image/") && mimeType !== "image/svg+xml" && mimeType !== "image/vnd.fastbidsheet"
+    const isPdf = mimeType === "application/pdf"
     if (isImage || isPdf) {
-      const mime = file.type
+      const mime = mimeType
       const msg = `${isImage ? "Image" : "PDF"} read successfully`
+      const fileBuffer = await fileHandle.stat().then((stat) => {
+        // Read file as buffer using fs
+        return fs.promises.readFile(filepath)
+      })
       return {
         title,
         output: msg,
@@ -84,18 +102,18 @@ export const ReadTool = Tool.define("read", {
             messageID: ctx.messageID,
             type: "file",
             mime,
-            url: `data:${mime};base64,${Buffer.from(await file.bytes()).toString("base64")}`,
+            url: `data:${mime};base64,${fileBuffer.toString("base64")}`,
           },
         ],
       }
     }
 
-    const isBinary = await isBinaryFile(filepath, file)
+    const isBinary = await isBinaryFile(filepath, fileHandle)
     if (isBinary) throw new Error(`Cannot read binary file: ${filepath}`)
 
     const limit = params.limit ?? DEFAULT_READ_LIMIT
     const offset = params.offset || 0
-    const lines = await file.text().then((text) => text.split("\n"))
+    const lines = await fileHandle.text().then((text) => text.split("\n"))
 
     const raw: string[] = []
     let bytes = 0
@@ -153,7 +171,7 @@ export const ReadTool = Tool.define("read", {
   },
 })
 
-async function isBinaryFile(filepath: string, file: Bun.BunFile): Promise<boolean> {
+async function isBinaryFile(filepath: string, file: FileHandle): Promise<boolean> {
   const ext = path.extname(filepath).toLowerCase()
   // binary check for common non-text extensions
   switch (ext) {
@@ -195,7 +213,7 @@ async function isBinaryFile(filepath: string, file: Bun.BunFile): Promise<boolea
   if (fileSize === 0) return false
 
   const bufferSize = Math.min(4096, fileSize)
-  const buffer = await file.arrayBuffer()
+  const buffer = await fs.promises.readFile(filepath)
   if (buffer.byteLength === 0) return false
   const bytes = new Uint8Array(buffer.slice(0, bufferSize))
 
