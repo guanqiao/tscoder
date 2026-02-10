@@ -4,6 +4,7 @@ import { Log } from "../util/log"
 import { Global } from "../global"
 import { existsSync } from "fs"
 import fs from "fs/promises"
+import { file } from "@/platform"
 
 export namespace Discovery {
   const log = Log.create({ service: "skill-discovery" })
@@ -30,7 +31,7 @@ export namespace Discovery {
         const skillPath = path.join(skillsDir, entry.name)
         const skillMd = path.join(skillPath, "SKILL.md")
 
-        if (await Bun.file(skillMd).exists()) {
+        if (await file(skillMd).exists()) {
           result.push(skillPath)
           log.debug("found local skill", { name: entry.name, path: skillPath })
         } else {

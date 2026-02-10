@@ -33,7 +33,7 @@ import { ulid } from "ulid"
 import { spawn } from "child_process"
 import { Command } from "../command"
 import { fileURLToPath, pathToFileURL } from "url"
-import { $ } from "@/platform"
+import { $, file, Glob } from "@/platform"
 import { ConfigMarkdown } from "../config/markdown"
 import { SessionSummary } from "./summary"
 import { NamedError } from "@tscoder/util/error"
@@ -978,7 +978,7 @@ export namespace SessionPrompt {
               // have to normalize, symbol search returns absolute paths
               // Decode the pathname since URL constructor doesn't automatically decode it
               const filepath = fileURLToPath(part.url)
-              const stat = await Bun.file(filepath)
+              const stat = await file(filepath)
                 .stat()
                 .catch(() => undefined)
 
@@ -1136,7 +1136,7 @@ export namespace SessionPrompt {
                 ]
               }
 
-              const file = Bun.file(filepath)
+              const f = file(filepath)
               FileTime.read(input.sessionID, filepath)
               return [
                 {
@@ -1152,7 +1152,7 @@ export namespace SessionPrompt {
                   messageID: info.id,
                   sessionID: input.sessionID,
                   type: "file",
-                  url: `data:${part.mime};base64,` + Buffer.from(await file.bytes()).toString("base64"),
+                  url: `data:${part.mime};base64,` + Buffer.from(await f.bytes()).toString("base64"),
                   mime: part.mime,
                   filename: part.filename!,
                   source: part.source,
@@ -1261,7 +1261,7 @@ export namespace SessionPrompt {
     // Switching from plan mode to build mode
     if (input.agent.name !== "plan" && assistantMessage?.info.agent === "plan") {
       const plan = Session.plan(input.session)
-      const exists = await Bun.file(plan).exists()
+      const exists = await file(plan).exists()
       if (exists) {
         const part = await Session.updatePart({
           id: Identifier.ascending("part"),
@@ -1280,7 +1280,7 @@ export namespace SessionPrompt {
     // Entering plan mode
     if (input.agent.name === "plan" && assistantMessage?.info.agent !== "plan") {
       const plan = Session.plan(input.session)
-      const exists = await Bun.file(plan).exists()
+      const exists = await file(plan).exists()
       if (!exists) await fs.mkdir(path.dirname(plan), { recursive: true })
       const part = await Session.updatePart({
         id: Identifier.ascending("part"),
