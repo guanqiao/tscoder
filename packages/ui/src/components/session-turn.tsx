@@ -7,11 +7,11 @@ import {
   type QuestionRequest,
   TextPart,
   ToolPart,
-} from "@opencode-ai/sdk/v2/client"
+} from "@tscoder/sdk/v2/client"
 import { useData } from "../context"
 import { type UiI18nKey, type UiI18nParams, useI18n } from "../context/i18n"
 
-import { Binary } from "@opencode-ai/util/binary"
+import { Binary } from "@tscoder/util/binary"
 import { createEffect, createMemo, createSignal, For, Match, on, onCleanup, ParentProps, Show, Switch } from "solid-js"
 import { Message, Part } from "./message-part"
 import { Markdown } from "./markdown"
@@ -474,7 +474,7 @@ export function SessionTurn(
       compactDisplay: "short",
       showZeros: false,
     })
-    return locale.startsWith("zh") ? human.replaceAll("„ÄÅ", "") : human
+    return locale.startsWith("zh") ? human.replaceAll("„Ä?, "") : human
   }
 
   const autoScroll = createAutoScroll({

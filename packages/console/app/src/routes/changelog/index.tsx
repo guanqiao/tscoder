@@ -78,7 +78,7 @@ function CollapsibleSection(props: { section: { title: string; items: string[] }
   return (
     <div data-component="collapsible-section">
       <button data-slot="toggle" onClick={() => setOpen(!open())}>
-        <span data-slot="icon">{open() ? "â–¾" : "â–¸"}</span>
+        <span data-slot="icon">{open() ? "â–? : "â–?}</span>
         <span>{props.section.title}</span>
       </button>
       <Show when={open()}>

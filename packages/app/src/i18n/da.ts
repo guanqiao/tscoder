@@ -179,8 +179,8 @@ export const dict = {
 
   "prompt.placeholder.shell": "Indtast shell-kommando...",
   "prompt.placeholder.normal": 'Spørg om hvad som helst... "{{example}}"',
-  "prompt.placeholder.summarizeComments": "Opsummér kommentarer…",
-  "prompt.placeholder.summarizeComment": "Opsummér kommentar…",
+  "prompt.placeholder.summarizeComments": "Opsummér kommentarer�?,
+  "prompt.placeholder.summarizeComment": "Opsummér kommentar�?,
   "prompt.mode.shell": "Shell",
   "prompt.mode.shell.exit": "esc for at afslutte",
 

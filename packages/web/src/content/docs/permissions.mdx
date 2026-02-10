@@ -13,9 +13,9 @@ As of `v1.1.1`, the legacy `tools` boolean config is deprecated and has been mer
 
 Each permission rule resolves to one of:
 
-- `"allow"` ‚Äî run without approval
-- `"ask"` ‚Äî prompt for approval
-- `"deny"` ‚Äî block the action
+- `"allow"` ‚Ä?run without approval
+- `"ask"` ‚Ä?prompt for approval
+- `"deny"` ‚Ä?block the action
 
 ---
 
@@ -129,20 +129,20 @@ Keep the list focused on trusted paths, and layer extra allow or deny rules as n
 
 OpenCode permissions are keyed by tool name, plus a couple of safety guards:
 
-- `read` ‚Äî reading a file (matches the file path)
-- `edit` ‚Äî all file modifications (covers `edit`, `write`, `patch`, `multiedit`)
-- `glob` ‚Äî file globbing (matches the glob pattern)
-- `grep` ‚Äî content search (matches the regex pattern)
-- `list` ‚Äî listing files in a directory (matches the directory path)
-- `bash` ‚Äî running shell commands (matches parsed commands like `git status --porcelain`)
-- `task` ‚Äî launching subagents (matches the subagent type)
-- `skill` ‚Äî loading a skill (matches the skill name)
-- `lsp` ‚Äî running LSP queries (currently non-granular)
-- `todoread`, `todowrite` ‚Äî reading/updating the todo list
-- `webfetch` ‚Äî fetching a URL (matches the URL)
-- `websearch`, `codesearch` ‚Äî web/code search (matches the query)
-- `external_directory` ‚Äî triggered when a tool touches paths outside the project working directory
-- `doom_loop` ‚Äî triggered when the same tool call repeats 3 times with identical input
+- `read` ‚Ä?reading a file (matches the file path)
+- `edit` ‚Ä?all file modifications (covers `edit`, `write`, `patch`, `multiedit`)
+- `glob` ‚Ä?file globbing (matches the glob pattern)
+- `grep` ‚Ä?content search (matches the regex pattern)
+- `list` ‚Ä?listing files in a directory (matches the directory path)
+- `bash` ‚Ä?running shell commands (matches parsed commands like `git status --porcelain`)
+- `task` ‚Ä?launching subagents (matches the subagent type)
+- `skill` ‚Ä?loading a skill (matches the skill name)
+- `lsp` ‚Ä?running LSP queries (currently non-granular)
+- `todoread`, `todowrite` ‚Ä?reading/updating the todo list
+- `webfetch` ‚Ä?fetching a URL (matches the URL)
+- `websearch`, `codesearch` ‚Ä?web/code search (matches the query)
+- `external_directory` ‚Ä?triggered when a tool touches paths outside the project working directory
+- `doom_loop` ‚Ä?triggered when the same tool call repeats 3 times with identical input
 
 ---
 
@@ -169,13 +169,13 @@ If you don‚Äôt specify anything, OpenCode starts from permissive defaults:
 
 ---
 
-## What ‚ÄúAsk‚Äù Does
+## What ‚ÄúAsk‚Ä?Does
 
 When OpenCode prompts for approval, the UI offers three outcomes:
 
-- `once` ‚Äî approve just this request
-- `always` ‚Äî approve future requests matching the suggested patterns (for the rest of the current OpenCode session)
-- `reject` ‚Äî deny the request
+- `once` ‚Ä?approve just this request
+- `always` ‚Ä?approve future requests matching the suggested patterns (for the rest of the current OpenCode session)
+- `reject` ‚Ä?deny the request
 
 The set of patterns that `always` would approve is provided by the tool (for example, bash approvals typically whitelist a safe command prefix like `git status*`).
 

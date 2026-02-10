@@ -35,9 +35,9 @@ describe("command keybind helpers", () => {
   test("formatKeybind returns human readable output", () => {
     const display = formatKeybind("ctrl+alt+arrowup")
 
-    expect(display).toContain("‚Üë")
-    expect(display.includes("Ctrl") || display.includes("‚åÉ")).toBe(true)
-    expect(display.includes("Alt") || display.includes("‚å•")).toBe(true)
+    expect(display).toContain("‚Ü?)
+    expect(display.includes("Ctrl") || display.includes("‚å?)).toBe(true)
+    expect(display.includes("Alt") || display.includes("‚å?)).toBe(true)
     expect(formatKeybind("none")).toBe("")
   })
 })

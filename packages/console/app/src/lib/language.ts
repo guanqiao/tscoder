@@ -30,21 +30,21 @@ function fix(pathname: string) {
 
 const LABEL = {
   en: "English",
-  zh: "简体中文",
+  zh: "简体中�?,
   zht: "繁體中文",
-  ko: "한국어",
+  ko: "한국�?,
   de: "Deutsch",
   es: "Español",
   fr: "Français",
   it: "Italiano",
   da: "Dansk",
-  ja: "日本語",
+  ja: "日本�?,
   pl: "Polski",
   ru: "Русский",
   ar: "العربية",
   no: "Norsk",
   br: "Português (Brasil)",
-  th: "ไทย",
+  th: "ไท�?,
   tr: "Türkçe",
 } satisfies Record<Locale, string>
 

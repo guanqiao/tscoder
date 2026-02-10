@@ -21,7 +21,7 @@ There are two types of agents in OpenCode; primary agents and subagents.
 
 ### Primary agents
 
-Primary agents are the main assistants you interact with directly. You can cycle through them using the **Tab** key, or your configured `switch_agent` keybind. These agents handle your main conversation. Tool access is configured via permissions ‚Äî for example, Build has all tools enabled while Plan is restricted.
+Primary agents are the main assistants you interact with directly. You can cycle through them using the **Tab** key, or your configured `switch_agent` keybind. These agents handle your main conversation. Tool access is configured via permissions ‚Ä?for example, Build has all tools enabled while Plan is restricted.
 
 :::tip
 You can use the **Tab** key to switch between primary agents during a session.
@@ -121,8 +121,8 @@ Hidden system agent that creates session summaries. It runs automatically and is
      ```
 
 3. **Navigation between sessions**: When subagents create their own child sessions, you can navigate between the parent session and all child sessions using:
-   - **\<Leader>+Right** (or your configured `session_child_cycle` keybind) to cycle forward through parent ‚Üí child1 ‚Üí child2 ‚Üí ... ‚Üí parent
-   - **\<Leader>+Left** (or your configured `session_child_cycle_reverse` keybind) to cycle backward through parent ‚Üê child1 ‚Üê child2 ‚Üê ... ‚Üê parent
+   - **\<Leader>+Right** (or your configured `session_child_cycle` keybind) to cycle forward through parent ‚Ü?child1 ‚Ü?child2 ‚Ü?... ‚Ü?parent
+   - **\<Leader>+Left** (or your configured `session_child_cycle_reverse` keybind) to cycle backward through parent ‚Ü?child1 ‚Ü?child2 ‚Ü?... ‚Ü?parent
 
    This allows you to seamlessly switch between the main conversation and specialized subagent work.
 
@@ -414,9 +414,9 @@ You can also use wildcards to control multiple tools at once. For example, to di
 
 You can configure permissions to manage what actions an agent can take. Currently, the permissions for the `edit`, `bash`, and `webfetch` tools can be configured to:
 
-- `"ask"` ‚Äî Prompt for approval before running the tool
-- `"allow"` ‚Äî Allow all operations without approval
-- `"deny"` ‚Äî Disable the tool
+- `"ask"` ‚Ä?Prompt for approval before running the tool
+- `"allow"` ‚Ä?Allow all operations without approval
+- `"deny"` ‚Ä?Disable the tool
 
 ```json title="opencode.json"
 {

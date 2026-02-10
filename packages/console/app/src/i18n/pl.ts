@@ -300,7 +300,7 @@ export const dict = {
     "Przeprowadziliśmy testy porównawcze i przetestowaliśmy modele specjalnie dla agentów kodujących, aby zapewnić najlepszą wydajność.",
   "workspace.newUser.feature.quality.title": "Najwyższa jakość",
   "workspace.newUser.feature.quality.body":
-    "Modele dostępu skonfigurowane pod kątem optymalnej wydajności – bez konieczności zmiany wersji na wyższą lub przekierowania do tańszych dostawców.",
+    "Modele dostępu skonfigurowane pod kątem optymalnej wydajności �?bez konieczności zmiany wersji na wyższą lub przekierowania do tańszych dostawców.",
   "workspace.newUser.feature.lockin.title": "Brak blokady",
   "workspace.newUser.feature.lockin.body":
     "Używaj Zen z dowolnym agentem kodującym i kontynuuj korzystanie z innych dostawców z opencode, kiedy tylko chcesz.",

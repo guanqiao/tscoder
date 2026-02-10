@@ -300,7 +300,7 @@ export const dict = {
     "Comparamos e testamos modelos especificamente para agentes de codificação para garantir o melhor desempenho.",
   "workspace.newUser.feature.quality.title": "Mais alta qualidade",
   "workspace.newUser.feature.quality.body":
-    "Modelos de acesso configurados para desempenho ideal – sem downgrades ou roteamento para provedores mais baratos.",
+    "Modelos de acesso configurados para desempenho ideal �?sem downgrades ou roteamento para provedores mais baratos.",
   "workspace.newUser.feature.lockin.title": "Sem bloqueio",
   "workspace.newUser.feature.lockin.body":
     "Use Zen com qualquer agente de codificação e continue usando outros provedores com opencode sempre que quiser.",

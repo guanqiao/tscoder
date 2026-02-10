@@ -221,8 +221,8 @@ export const dict = {
 
   "prompt.placeholder.shell": "Shell-Befehl eingeben...",
   "prompt.placeholder.normal": 'Fragen Sie alles... "{{example}}"',
-  "prompt.placeholder.summarizeComments": "Kommentare zusammenfassenâ€¦",
-  "prompt.placeholder.summarizeComment": "Kommentar zusammenfassenâ€¦",
+  "prompt.placeholder.summarizeComments": "Kommentare zusammenfassenâ€?,
+  "prompt.placeholder.summarizeComment": "Kommentar zusammenfassenâ€?,
   "prompt.mode.shell": "Shell",
   "prompt.mode.shell.exit": "esc zum Verlassen",
 

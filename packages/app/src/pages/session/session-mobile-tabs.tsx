@@ -1,5 +1,5 @@
 import { Match, Show, Switch } from "solid-js"
-import { Tabs } from "@opencode-ai/ui/tabs"
+import { Tabs } from "@tscoder/ui/tabs"
 
 export function SessionMobileTabs(props: {
   open: boolean

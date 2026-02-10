@@ -1,11 +1,11 @@
-import { TextField } from "@opencode-ai/ui/text-field"
-import { Logo } from "@opencode-ai/ui/logo"
-import { Button } from "@opencode-ai/ui/button"
+import { TextField } from "@tscoder/ui/text-field"
+import { Logo } from "@tscoder/ui/logo"
+import { Button } from "@tscoder/ui/button"
 import { Component, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import { usePlatform } from "@/context/platform"
 import { useLanguage } from "@/context/language"
-import { Icon } from "@opencode-ai/ui/icon"
+import { Icon } from "@tscoder/ui/icon"
 
 export type InitError = {
   name: string
@@ -113,7 +113,7 @@ function formatInitError(error: InitError, t: Translator): string {
     case "ConfigInvalidError": {
       const issues = Array.isArray(data.issues)
         ? data.issues.map(
-            (issue: { message: string; path: string[] }) => "â†³ " + issue.message + " " + issue.path.join("."),
+            (issue: { message: string; path: string[] }) => "â†?" + issue.message + " " + issue.path.join("."),
           )
         : []
       const message = typeof data.message === "string" ? data.message : ""

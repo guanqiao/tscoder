@@ -1,8 +1,8 @@
 import { useFile } from "@/context/file"
-import { Collapsible } from "@opencode-ai/ui/collapsible"
-import { FileIcon } from "@opencode-ai/ui/file-icon"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
+import { Collapsible } from "@tscoder/ui/collapsible"
+import { FileIcon } from "@tscoder/ui/file-icon"
+import { Icon } from "@tscoder/ui/icon"
+import { Tooltip } from "@tscoder/ui/tooltip"
 import {
   createEffect,
   createMemo,
@@ -17,7 +17,7 @@ import {
   type ParentProps,
 } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import type { FileNode } from "@opencode-ai/sdk/v2"
+import type { FileNode } from "@tscoder/sdk/v2"
 
 function pathToFileUrl(filepath: string): string {
   const encodedPath = filepath
@@ -385,14 +385,14 @@ export default function FileTree(props: {
                     <Show when={label()}>
                       {(t: () => string) => (
                         <>
-                          <span class="mx-1 font-bold text-text-invert-strong">â€¢</span>
+                          <span class="mx-1 font-bold text-text-invert-strong">â€?/span>
                           <span class="shrink-0 text-text-invert-strong">{t()}</span>
                         </>
                       )}
                     </Show>
                     <Show when={ignored()}>
                       <>
-                        <span class="mx-1 font-bold text-text-invert-strong">â€¢</span>
+                        <span class="mx-1 font-bold text-text-invert-strong">â€?/span>
                         <span class="shrink-0 text-text-invert-strong">Ignored</span>
                       </>
                     </Show>

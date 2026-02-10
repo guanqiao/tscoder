@@ -296,7 +296,7 @@ export const dict = {
     "Vi har benchmarked og testet modeller spesifikt for kodingsagenter for å sikre best mulig ytelse.",
   "workspace.newUser.feature.quality.title": "Høyeste kvalitet",
   "workspace.newUser.feature.quality.body":
-    "Få tilgang til modeller konfigurert for optimal ytelse – ingen nedgraderinger eller ruting til billigere leverandører.",
+    "Få tilgang til modeller konfigurert for optimal ytelse �?ingen nedgraderinger eller ruting til billigere leverandører.",
   "workspace.newUser.feature.lockin.title": "Ingen innlåsing",
   "workspace.newUser.feature.lockin.body":
     "Bruk Zen med hvilken som helst kodeagent, og fortsett å bruke andre leverandører med opencode når du vil.",

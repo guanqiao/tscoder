@@ -302,7 +302,7 @@ export const dict = {
     "Wir haben Modelle speziell für Codierungsagenten einem Benchmarking unterzogen und getestet, um die beste Leistung sicherzustellen.",
   "workspace.newUser.feature.quality.title": "Höchste Qualität",
   "workspace.newUser.feature.quality.body":
-    "Für optimale Performance konfigurierte Zugangsmodelle – keine Downgrades oder Weiterleitung zu günstigeren Anbietern.",
+    "Für optimale Performance konfigurierte Zugangsmodelle �?keine Downgrades oder Weiterleitung zu günstigeren Anbietern.",
   "workspace.newUser.feature.lockin.title": "Kein Lock-in",
   "workspace.newUser.feature.lockin.body":
     "Verwenden Sie Zen mit einem beliebigen Codierungsagenten und nutzen Sie weiterhin andere Anbieter mit opencode, wann immer Sie möchten.",
@@ -473,5 +473,5 @@ export const dict = {
   "workspace.black.waitlist.enrolling": "Anmeldung...",
   "workspace.black.waitlist.enrolled": "Eingeschrieben",
   "workspace.black.waitlist.enrollNote":
-    "Wenn Sie auf „Anmelden“ klicken, beginnt Ihr Abonnement sofort und Ihre Karte wird belastet.",
+    "Wenn Sie auf „Anmelden�?klicken, beginnt Ihr Abonnement sofort und Ihre Karte wird belastet.",
 } satisfies Dict

@@ -1,21 +1,21 @@
 ---
-title: LLM 配置指南（中文版）
-description: 如何配置 OpenCode 的 LLM（大语言模型）连接
+title: LLM 配置指南（中文版�?
+description: 如何配置 OpenCode �?LLM（大语言模型）连�?
 ---
 
 # LLM 配置指南
 
-本文档详细介绍如何在 OpenCode 中配置 LLM（大语言模型）连接。
+本文档详细介绍如何在 OpenCode 中配�?LLM（大语言模型）连接�?
 
 ## 概述
 
-OpenCode 支持通过简化的 `llm` 配置来连接各种大语言模型服务。每个 LLM 配置需要指定以下信息：
+OpenCode 支持通过简化的 `llm` 配置来连接各种大语言模型服务。每�?LLM 配置需要指定以下信息：
 
-- **名称** - 配置的显示名称
-- **端点地址** - API 服务的 URL
+- **名称** - 配置的显示名�?
+- **端点地址** - API 服务�?URL
 - **API 密钥** - 用于身份验证
 - **模型名称** - 要使用的具体模型
-- **CA 证书** - 用于 HTTPS 连接的安全证书（必填）
+- **CA 证书** - 用于 HTTPS 连接的安全证书（必填�?
 
 ## 配置文件位置
 
@@ -23,7 +23,7 @@ OpenCode 支持多个配置文件位置，按优先级排序：
 
 ### 1. 项目配置文件（推荐）
 
-在项目根目录创建 `opencode.json` 文件：
+在项目根目录创建 `opencode.json` 文件�?
 
 ```
 你的项目/
@@ -71,15 +71,15 @@ export OPENCODE_CONFIG=/path/to/your/config.json
 }
 ```
 
-### 配置项说明
+### 配置项说�?
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| `name` | string | 是 | LLM 配置的显示名称，用于在 `opencode models` 命令中识别 |
-| `endpoint` | string | 是 | API 服务的完整 URL，例如 `https://api.openai.com/v1` |
-| `apiKey` | string | 是 | API 访问密钥，用于身份验证 |
-| `model` | string | 是 | 模型标识符，例如 `gpt-4`、`claude-3-opus-20240229` |
-| `caCert` | string | 是 | CA 证书文件的绝对路径或相对路径（支持 `~` 展开） |
+| `name` | string | �?| LLM 配置的显示名称，用于�?`opencode models` 命令中识�?|
+| `endpoint` | string | �?| API 服务的完�?URL，例�?`https://api.openai.com/v1` |
+| `apiKey` | string | �?| API 访问密钥，用于身份验�?|
+| `model` | string | �?| 模型标识符，例如 `gpt-4`、`claude-3-opus-20240229` |
+| `caCert` | string | �?| CA 证书文件的绝对路径或相对路径（支�?`~` 展开�?|
 
 ## 配置示例
 
@@ -117,7 +117,7 @@ export OPENCODE_CONFIG=/path/to/your/config.json
 }
 ```
 
-### 示例 3：本地 Ollama
+### 示例 3：本�?Ollama
 
 ```json
 {
@@ -134,7 +134,7 @@ export OPENCODE_CONFIG=/path/to/your/config.json
 }
 ```
 
-### 示例 4：多个 LLM 配置
+### 示例 4：多�?LLM 配置
 
 ```json
 {
@@ -167,9 +167,9 @@ export OPENCODE_CONFIG=/path/to/your/config.json
 
 ## CA 证书配置
 
-### 什么是 CA 证书？
+### 什么是 CA 证书�?
 
-CA（Certificate Authority）证书用于验证 HTTPS 连接的服务器身份。OpenCode 要求所有 LLM 连接都必须使用自定义 CA 证书，以确保连接安全。
+CA（Certificate Authority）证书用于验�?HTTPS 连接的服务器身份。OpenCode 要求所�?LLM 连接都必须使用自定义 CA 证书，以确保连接安全�?
 
 ### 获取 CA 证书
 
@@ -197,38 +197,38 @@ Get-ChildItem -Path Cert:\LocalMachine\Root | ForEach-Object {
 }
 ```
 
-#### 方法 2：从服务提供商获取
+#### 方法 2：从服务提供商获�?
 
-- **OpenAI**: 可以从 OpenAI 官方文档或支持团队获取
-- **Anthropic**: 从 Anthropic 官方文档获取
-- **自托管**: 使用自签名证书时，导出对应的 CA 证书
+- **OpenAI**: 可以�?OpenAI 官方文档或支持团队获�?
+- **Anthropic**: �?Anthropic 官方文档获取
+- **自托�?*: 使用自签名证书时，导出对应的 CA 证书
 
-#### 方法 3：使用 Let's Encrypt 证书
+#### 方法 3：使�?Let's Encrypt 证书
 
 如果使用 Let's Encrypt 证书的服务：
 
 ```bash
-# 下载 Let's Encrypt 根证书
+# 下载 Let's Encrypt 根证�?
 curl -o ~/.certs/letsencrypt-ca.pem https://letsencrypt.org/certs/isrgrootx1.pem
 ```
 
 ### 证书路径说明
 
-证书路径支持以下格式：
+证书路径支持以下格式�?
 
-- **绝对路径**: `/home/user/.certs/ca.pem` 或 `C:\Users\User\.certs\ca.pem`
-- **相对路径**: 相对于当前工作目录
-- **家目录展开**: `~/.certs/ca.pem` 会自动展开为 `/home/user/.certs/ca.pem`
+- **绝对路径**: `/home/user/.certs/ca.pem` �?`C:\Users\User\.certs\ca.pem`
+- **相对路径**: 相对于当前工作目�?
+- **家目录展开**: `~/.certs/ca.pem` 会自动展开�?`/home/user/.certs/ca.pem`
 
 ### 创建证书目录
 
-建议将证书统一存放在 `~/.certs/` 目录：
+建议将证书统一存放�?`~/.certs/` 目录�?
 
 ```bash
 # 创建证书目录
 mkdir -p ~/.certs
 
-# 设置适当权限（Linux/macOS）
+# 设置适当权限（Linux/macOS�?
 chmod 700 ~/.certs
 chmod 600 ~/.certs/*.pem
 ```
@@ -237,13 +237,13 @@ chmod 600 ~/.certs/*.pem
 
 ### 1. 查看可用模型
 
-配置完成后，使用以下命令查看已配置的模型：
+配置完成后，使用以下命令查看已配置的模型�?
 
 ```bash
 opencode models
 ```
 
-输出示例：
+输出示例�?
 ```
 llm-openai-gpt-4/gpt-4
 llm-anthropic-claude/claude-3-opus-20240229
@@ -251,10 +251,10 @@ llm-anthropic-claude/claude-3-opus-20240229
 
 ### 2. 测试连接
 
-使用 `opencode run` 命令测试 LLM 连接：
+使用 `opencode run` 命令测试 LLM 连接�?
 
 ```bash
-opencode run "你好，请介绍一下自己"
+opencode run "你好，请介绍一下自�?
 ```
 
 ### 3. 切换模型
@@ -262,7 +262,7 @@ opencode run "你好，请介绍一下自己"
 使用 `model` 命令切换当前使用的模型：
 
 ```bash
-# 查看所有可用模型
+# 查看所有可用模�?
 opencode models
 
 # 使用特定模型
@@ -276,27 +276,27 @@ opencode --model llm-openai-gpt-4/gpt-4 run "你好"
 **原因**: CA 证书文件不存在或路径错误
 
 **解决方法**:
-1. 检查证书文件是否存在
-2. 确认路径正确（注意 `~` 会自动展开为用户主目录）
-3. 确保证书文件有读取权限
+1. 检查证书文件是否存�?
+2. 确认路径正确（注�?`~` 会自动展开为用户主目录�?
+3. 确保证书文件有读取权�?
 
-### Q: 连接超时或失败
+### Q: 连接超时或失�?
 
 **原因**: 可能是网络问题或端点地址错误
 
 **解决方法**:
-1. 检查网络连接
+1. 检查网络连�?
 2. 验证端点地址是否正确
 3. 检查防火墙设置
 4. 确认 API 密钥有效
 
-### Q: 如何配置代理？
+### Q: 如何配置代理�?
 
-目前 OpenCode 的简化 LLM 配置不直接支持代理设置。如需使用代理，请使用传统的 `provider` 配置方式。
+目前 OpenCode 的简�?LLM 配置不直接支持代理设置。如需使用代理，请使用传统�?`provider` 配置方式�?
 
 ### Q: 可以同时配置多个 LLM 吗？
 
-可以！`llm` 是一个数组，可以配置多个 LLM：
+可以！`llm` 是一个数组，可以配置多个 LLM�?
 
 ```json
 {
@@ -314,9 +314,9 @@ opencode --model llm-openai-gpt-4/gpt-4 run "你好"
 
 1. 项目配置文件 (`opencode.json`)
 2. 全局配置文件 (`~/.config/opencode/opencode.json`)
-3. 环境变量指定的配置 (`OPENCODE_CONFIG`)
+3. 环境变量指定的配�?(`OPENCODE_CONFIG`)
 
-`llm` 配置会优先于传统的 `provider` 配置。
+`llm` 配置会优先于传统�?`provider` 配置�?
 
 ## 完整配置示例
 
@@ -346,4 +346,4 @@ opencode --model llm-openai-gpt-4/gpt-4 run "你好"
 
 ---
 
-如有问题，请查看 [故障排除指南](/docs/troubleshooting) 或在 GitHub 上提交 Issue。
+如有问题，请查看 [故障排除指南](/docs/troubleshooting) 或在 GitHub 上提�?Issue�?

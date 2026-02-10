@@ -32,7 +32,7 @@ async function main() {
   if (extensionVersion !== cleanVersion) {
     throw new Error(`Version mismatch: extension.toml has ${extensionVersion} but tag is ${cleanVersion}`)
   }
-  console.log(`‚úÖ Version ${extensionVersion} matches tag`)
+  console.log(`‚ú?Version ${extensionVersion} matches tag`)
 
   // Clone the fork to a temp directory
   const workDir = join(tmpdir(), `zed-extensions-${Date.now()}`)
@@ -52,7 +52,7 @@ async function main() {
   await $`git checkout main`
   await $`git reset --hard upstream/main`
   await $`git push origin main --force`
-  console.log(`‚úÖ Fork synced (force reset to upstream)`)
+  console.log(`‚ú?Fork synced (force reset to upstream)`)
 
   // Create a new branch
   const branchName = `update-${EXTENSION_NAME}-${cleanVersion}`
@@ -85,7 +85,7 @@ async function main() {
   const commitMessage = `Update ${EXTENSION_NAME} to v${cleanVersion}`
 
   await $`git commit -m ${commitMessage}`
-  console.log(`‚úÖ Changes committed`)
+  console.log(`‚ú?Changes committed`)
 
   // Delete any existing branches for opencode updates
   console.log(`üîç Checking for existing branches...`)
@@ -98,10 +98,10 @@ async function main() {
     .filter(Boolean)
 
   if (oldBranches.length > 0) {
-    console.log(`üóëÔ∏è  Found ${oldBranches.length} old branch(es), deleting...`)
+    console.log(`üóëÔ∏? Found ${oldBranches.length} old branch(es), deleting...`)
     for (const branch of oldBranches) {
       await $`git push https://x-access-token:${token}@github.com/${FORK_REPO}.git --delete ${branch}`
-      console.log(`‚úÖ Deleted branch ${branch}`)
+      console.log(`‚ú?Deleted branch ${branch}`)
     }
   }
 
@@ -120,11 +120,11 @@ async function main() {
   }
 
   const prUrl = prResult.stdout.toString().trim()
-  console.log(`‚úÖ Pull request created: ${prUrl}`)
+  console.log(`‚ú?Pull request created: ${prUrl}`)
   console.log(`üéâ Done!`)
 }
 
 main().catch((err) => {
-  console.error("‚ùå Error:", err.message)
+  console.error("‚ù?Error:", err.message)
   process.exit(1)
 })

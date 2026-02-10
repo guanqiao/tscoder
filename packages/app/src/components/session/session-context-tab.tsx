@@ -4,14 +4,14 @@ import { useParams } from "@solidjs/router"
 import { DateTime } from "luxon"
 import { useSync } from "@/context/sync"
 import { useLayout } from "@/context/layout"
-import { checksum } from "@opencode-ai/util/encode"
-import { findLast } from "@opencode-ai/util/array"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Accordion } from "@opencode-ai/ui/accordion"
-import { StickyAccordionHeader } from "@opencode-ai/ui/sticky-accordion-header"
-import { Code } from "@opencode-ai/ui/code"
-import { Markdown } from "@opencode-ai/ui/markdown"
-import type { Message, Part, UserMessage } from "@opencode-ai/sdk/v2/client"
+import { checksum } from "@tscoder/util/encode"
+import { findLast } from "@tscoder/util/array"
+import { Icon } from "@tscoder/ui/icon"
+import { Accordion } from "@tscoder/ui/accordion"
+import { StickyAccordionHeader } from "@tscoder/ui/sticky-accordion-header"
+import { Code } from "@tscoder/ui/code"
+import { Markdown } from "@tscoder/ui/markdown"
+import type { Message, Part, UserMessage } from "@tscoder/sdk/v2/client"
 import { useLanguage } from "@/context/language"
 import { getSessionContextMetrics } from "./session-context-metrics"
 
@@ -63,31 +63,31 @@ export function SessionContextTab(props: SessionContextTabProps) {
   })
 
   const number = (value: number | null | undefined) => {
-    if (value === undefined) return "â€”"
-    if (value === null) return "â€”"
+    if (value === undefined) return "â€?
+    if (value === null) return "â€?
     return value.toLocaleString(language.locale())
   }
 
   const percent = (value: number | null | undefined) => {
-    if (value === undefined) return "â€”"
-    if (value === null) return "â€”"
+    if (value === undefined) return "â€?
+    if (value === null) return "â€?
     return value.toLocaleString(language.locale()) + "%"
   }
 
   const time = (value: number | undefined) => {
-    if (!value) return "â€”"
+    if (!value) return "â€?
     return DateTime.fromMillis(value).setLocale(language.locale()).toLocaleString(DateTime.DATETIME_MED)
   }
 
   const providerLabel = createMemo(() => {
     const c = ctx()
-    if (!c) return "â€”"
+    if (!c) return "â€?
     return c.providerLabel
   })
 
   const modelLabel = createMemo(() => {
     const c = ctx()
-    if (!c) return "â€”"
+    if (!c) return "â€?
     return c.modelLabel
   })
 
@@ -218,7 +218,7 @@ export function SessionContextTab(props: SessionContextTabProps) {
     const c = ctx()
     const count = counts()
     return [
-      { label: language.t("context.stats.session"), value: props.info()?.title ?? params.id ?? "â€”" },
+      { label: language.t("context.stats.session"), value: props.info()?.title ?? params.id ?? "â€? },
       { label: language.t("context.stats.messages"), value: count.all.toLocaleString(language.locale()) },
       { label: language.t("context.stats.provider"), value: providerLabel() },
       { label: language.t("context.stats.model"), value: modelLabel() },
@@ -266,7 +266,7 @@ export function SessionContextTab(props: SessionContextTabProps) {
           <Accordion.Trigger>
             <div class="flex items-center justify-between gap-2 w-full">
               <div class="min-w-0 truncate">
-                {msgProps.message.role} <span class="text-text-base">â€¢ {msgProps.message.id}</span>
+                {msgProps.message.role} <span class="text-text-base">â€?{msgProps.message.id}</span>
               </div>
               <div class="flex items-center gap-3">
                 <div class="shrink-0 text-12-regular text-text-weak">{time(msgProps.message.time.created)}</div>

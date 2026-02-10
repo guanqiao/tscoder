@@ -1,5 +1,5 @@
 import { App } from "@slack/bolt"
-import { createOpencode, type ToolPart } from "@opencode-ai/sdk"
+import { createOpencode, type ToolPart } from "@tscoder/sdk"
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -17,7 +17,7 @@ console.log("ğŸš€ Starting opencode server...")
 const opencode = await createOpencode({
   port: 0,
 })
-console.log("âœ… Opencode server ready")
+console.log("âœ?Opencode server ready")
 
 const sessions = new Map<string, { client: any; server: any; sessionId: string; channel: string; thread: string }>()
 ;(async () => {
@@ -63,7 +63,7 @@ app.message(async ({ message, say }) => {
     return
   }
 
-  console.log("âœ… Processing message:", message.text)
+  console.log("âœ?Processing message:", message.text)
 
   const channel = message.channel
   const thread = (message as any).thread_ts || message.ts
@@ -80,7 +80,7 @@ app.message(async ({ message, say }) => {
     })
 
     if (createResult.error) {
-      console.error("âŒ Failed to create session:", createResult.error)
+      console.error("â?Failed to create session:", createResult.error)
       await say({
         text: "Sorry, I had trouble creating a session. Please try again.",
         thread_ts: thread,
@@ -88,7 +88,7 @@ app.message(async ({ message, say }) => {
       return
     }
 
-    console.log("âœ… Created opencode session:", createResult.data.id)
+    console.log("âœ?Created opencode session:", createResult.data.id)
 
     session = { client, server, sessionId: createResult.data.id, channel, thread }
     sessions.set(sessionKey, session)
@@ -110,7 +110,7 @@ app.message(async ({ message, say }) => {
   console.log("ğŸ“¤ Opencode response:", JSON.stringify(result, null, 2))
 
   if (result.error) {
-    console.error("âŒ Failed to send message:", result.error)
+    console.error("â?Failed to send message:", result.error)
     await say({
       text: "Sorry, I had trouble processing your message. Please try again.",
       thread_ts: thread,

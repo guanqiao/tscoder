@@ -1,5 +1,5 @@
-import { getFilename } from "@opencode-ai/util/path"
-import { type AgentPartInput, type FilePartInput, type Part, type TextPartInput } from "@opencode-ai/sdk/v2/client"
+import { getFilename } from "@tscoder/util/path"
+import { type AgentPartInput, type FilePartInput, type Part, type TextPartInput } from "@tscoder/sdk/v2/client"
 import type { FileSelection } from "@/context/file"
 import type { AgentPart, FileAttachmentPart, ImageAttachmentPart, Prompt } from "@/context/prompt"
 import { Identifier } from "@/utils/id"

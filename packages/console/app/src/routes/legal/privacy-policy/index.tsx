@@ -413,7 +413,7 @@ export default function PrivacyPolicy() {
                 The Services use cookies and similar technologies such as pixel tags, web beacons, clear GIFs and
                 JavaScript (collectively, "Cookies") to enable our servers to recognize your web browser, tell us how
                 and when you visit and use our Services, analyze trends, learn about our user base and operate and
-                improve our Services. Cookies are small pieces of dataâ€“ usually text files â€“ placed on your computer,
+                improve our Services. Cookies are small pieces of dataâ€?usually text files â€?placed on your computer,
                 tablet, phone or similar device when you use that device to access our Services. We may also supplement
                 the information we collect from you with information received from third parties, including third
                 parties that have placed their own Cookies on your device(s).

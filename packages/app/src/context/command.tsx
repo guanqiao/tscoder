@@ -1,7 +1,7 @@
 import { createEffect, createMemo, onCleanup, onMount, type Accessor } from "solid-js"
 import { createStore } from "solid-js/store"
-import { createSimpleContext } from "@opencode-ai/ui/context"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
+import { createSimpleContext } from "@tscoder/ui/context"
+import { useDialog } from "@tscoder/ui/context/dialog"
 import { useLanguage } from "@/context/language"
 import { useSettings } from "@/context/settings"
 import { Persist, persisted } from "@/utils/persist"
@@ -146,17 +146,17 @@ export function formatKeybind(config: string): string {
   const kb = keybinds[0]
   const parts: string[] = []
 
-  if (kb.ctrl) parts.push(IS_MAC ? "‚åÉ" : "Ctrl")
-  if (kb.alt) parts.push(IS_MAC ? "‚å•" : "Alt")
-  if (kb.shift) parts.push(IS_MAC ? "‚áß" : "Shift")
-  if (kb.meta) parts.push(IS_MAC ? "‚åò" : "Meta")
+  if (kb.ctrl) parts.push(IS_MAC ? "‚å? : "Ctrl")
+  if (kb.alt) parts.push(IS_MAC ? "‚å? : "Alt")
+  if (kb.shift) parts.push(IS_MAC ? "‚á? : "Shift")
+  if (kb.meta) parts.push(IS_MAC ? "‚å? : "Meta")
 
   if (kb.key) {
     const keys: Record<string, string> = {
-      arrowup: "‚Üë",
-      arrowdown: "‚Üì",
-      arrowleft: "‚Üê",
-      arrowright: "‚Üí",
+      arrowup: "‚Ü?,
+      arrowdown: "‚Ü?,
+      arrowleft: "‚Ü?,
+      arrowright: "‚Ü?,
       comma: ",",
       plus: "+",
       space: "Space",

@@ -103,7 +103,7 @@ async function printWorkspace(workspaceID: string) {
         rows.map((row) => {
           const subStatus = getSubscriptionStatus(row)
           return {
-            email: (row.timeDeleted ? "‚ùå " : "") + (row.authEmail ?? row.inviteEmail),
+            email: (row.timeDeleted ? "‚ù?" : "") + (row.authEmail ?? row.inviteEmail),
             role: row.role,
             timeSeen: formatDate(row.timeSeen),
             monthly: formatMonthlyUsage(row.monthlyUsage, row.monthlyLimit),

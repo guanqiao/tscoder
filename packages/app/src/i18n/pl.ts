@@ -179,8 +179,8 @@ export const dict = {
 
   "prompt.placeholder.shell": "Wpisz polecenie terminala...",
   "prompt.placeholder.normal": 'Zapytaj o cokolwiek... "{{example}}"',
-  "prompt.placeholder.summarizeComments": "Podsumuj komentarze…",
-  "prompt.placeholder.summarizeComment": "Podsumuj komentarz…",
+  "prompt.placeholder.summarizeComments": "Podsumuj komentarze�?,
+  "prompt.placeholder.summarizeComment": "Podsumuj komentarz�?,
   "prompt.mode.shell": "Terminal",
   "prompt.mode.shell.exit": "esc aby wyjść",
 

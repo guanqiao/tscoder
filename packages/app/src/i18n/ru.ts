@@ -179,8 +179,8 @@ export const dict = {
 
   "prompt.placeholder.shell": "Введите команду оболочки...",
   "prompt.placeholder.normal": 'Спросите что угодно... "{{example}}"',
-  "prompt.placeholder.summarizeComments": "Суммировать комментарии…",
-  "prompt.placeholder.summarizeComment": "Суммировать комментарий…",
+  "prompt.placeholder.summarizeComments": "Суммировать комментарии�?,
+  "prompt.placeholder.summarizeComment": "Суммировать комментарий�?,
   "prompt.mode.shell": "Оболочка",
   "prompt.mode.shell.exit": "esc для выхода",
 
