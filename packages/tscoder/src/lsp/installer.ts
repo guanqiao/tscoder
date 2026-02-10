@@ -4,7 +4,7 @@ import fs from "fs/promises"
 import { Global } from "../global"
 import { Log } from "../util/log"
 import { BunProc } from "../bun"
-import { $ } from "bun"
+import { $, file, writeFile, which, spawnAsync } from "@/platform"
 import { Archive } from "../util/archive"
 
 export namespace LSPInstaller {
@@ -38,19 +38,20 @@ export namespace LSPInstaller {
     extensions: [".py", ".pyi"],
     async install(options = {}) {
       const js = path.join(Global.Path.bin, "node_modules", "pyright", "dist", "pyright-langserver.js")
-      if (!options.force && (await Bun.file(js).exists())) {
+      if (!options.force && (await file(js).exists())) {
         log.info("Pyright is already installed", { path: js })
         return true
       }
 
       log.info("Installing Pyright...")
       try {
-        await Bun.spawn([BunProc.which(), "install", "pyright"], {
+        const proc = spawnAsync([BunProc.which(), "install", "pyright"], {
           cwd: Global.Path.bin,
           env: { ...process.env, BUN_BE_BUN: "1" },
           stdout: options.verbose ? "inherit" : "pipe",
           stderr: options.verbose ? "inherit" : "pipe",
-        }).exited
+        })
+        await new Promise((resolve) => proc.on("exit", resolve))
         log.info("Pyright installed successfully")
         return true
       } catch (error) {
@@ -60,7 +61,7 @@ export namespace LSPInstaller {
     },
     async isInstalled() {
       const js = path.join(Global.Path.bin, "node_modules", "pyright", "dist", "pyright-langserver.js")
-      return await Bun.file(js).exists()
+      return await file(js).exists()
     },
   }
 
@@ -121,20 +122,21 @@ export namespace LSPInstaller {
     extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts"],
     async install(options = {}) {
       const js = path.join(Global.Path.bin, "node_modules", "typescript-language-server", "lib", "cli.js")
-      
-      if (!options.force && (await Bun.file(js).exists())) {
+
+      if (!options.force && (await file(js).exists())) {
         log.info("TypeScript Language Server is already installed", { path: js })
         return true
       }
 
       log.info("Installing TypeScript Language Server...")
       try {
-        await Bun.spawn([BunProc.which(), "install", "typescript-language-server", "typescript"], {
+        const proc = spawnAsync([BunProc.which(), "install", "typescript-language-server", "typescript"], {
           cwd: Global.Path.bin,
           env: { ...process.env, BUN_BE_BUN: "1" },
           stdout: options.verbose ? "inherit" : "pipe",
           stderr: options.verbose ? "inherit" : "pipe",
-        }).exited
+        })
+        await new Promise((resolve) => proc.on("exit", resolve))
         log.info("TypeScript Language Server installed successfully")
         return true
       } catch (error) {
@@ -144,7 +146,7 @@ export namespace LSPInstaller {
     },
     async isInstalled() {
       const js = path.join(Global.Path.bin, "node_modules", "typescript-language-server", "lib", "cli.js")
-      return await Bun.file(js).exists()
+      return await file(js).exists()
     },
   }
 
@@ -156,20 +158,21 @@ export namespace LSPInstaller {
     extensions: [".vue"],
     async install(options = {}) {
       const js = path.join(Global.Path.bin, "node_modules", "@vue", "language-server", "bin", "vue-language-server.js")
-      
-      if (!options.force && (await Bun.file(js).exists())) {
+
+      if (!options.force && (await file(js).exists())) {
         log.info("Vue Language Server is already installed", { path: js })
         return true
       }
 
       log.info("Installing Vue Language Server...")
       try {
-        await Bun.spawn([BunProc.which(), "install", "@vue/language-server"], {
+        const proc = spawnAsync([BunProc.which(), "install", "@vue/language-server"], {
           cwd: Global.Path.bin,
           env: { ...process.env, BUN_BE_BUN: "1" },
           stdout: options.verbose ? "inherit" : "pipe",
           stderr: options.verbose ? "inherit" : "pipe",
-        }).exited
+        })
+        await new Promise((resolve) => proc.on("exit", resolve))
         log.info("Vue Language Server installed successfully")
         return true
       } catch (error) {
@@ -179,7 +182,7 @@ export namespace LSPInstaller {
     },
     async isInstalled() {
       const js = path.join(Global.Path.bin, "node_modules", "@vue", "language-server", "bin", "vue-language-server.js")
-      return await Bun.file(js).exists()
+      return await file(js).exists()
     },
   }
 
@@ -191,8 +194,8 @@ export namespace LSPInstaller {
     extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts", ".vue"],
     async install(options = {}) {
       const serverPath = path.join(Global.Path.bin, "vscode-eslint", "server", "out", "eslintServer.js")
-      
-      if (!options.force && (await Bun.file(serverPath).exists())) {
+
+      if (!options.force && (await file(serverPath).exists())) {
         log.info("ESLint Language Server is already installed", { path: serverPath })
         return true
       }
@@ -206,7 +209,8 @@ export namespace LSPInstaller {
         }
 
         const zipPath = path.join(Global.Path.bin, "vscode-eslint.zip")
-        await Bun.file(zipPath).write(response)
+        const responseBuffer = Buffer.from(await response.arrayBuffer())
+        await writeFile(zipPath, responseBuffer)
 
         const ok = await Archive.extractZip(zipPath, Global.Path.bin)
           .then(() => true)
@@ -240,7 +244,7 @@ export namespace LSPInstaller {
     },
     async isInstalled() {
       const serverPath = path.join(Global.Path.bin, "vscode-eslint", "server", "out", "eslintServer.js")
-      return await Bun.file(serverPath).exists()
+      return await file(serverPath).exists()
     },
   }
 
@@ -252,30 +256,26 @@ export namespace LSPInstaller {
     extensions: [".go"],
     async install(options = {}) {
       const bin = path.join(Global.Path.bin, "gopls" + (process.platform === "win32" ? ".exe" : ""))
-      
+
       if (!options.force && (await pathExists(bin))) {
         log.info("Gopls is already installed", { path: bin })
         return true
       }
 
-      if (!Bun.which("go")) {
+      if (!which("go")) {
         log.error("Go is required to install Gopls. Please install Go first.")
         return false
       }
 
       log.info("Installing Gopls...")
       try {
-        const proc = Bun.spawn({
-          cmd: ["go", "install", "golang.org/x/tools/gopls@latest"],
+        const proc = spawnAsync(["go", "install", "golang.org/x/tools/gopls@latest"], {
+          cwd: Global.Path.bin,
           env: { ...process.env, GOBIN: Global.Path.bin },
           stdout: options.verbose ? "inherit" : "pipe",
           stderr: options.verbose ? "inherit" : "pipe",
         })
-        const exit = await proc.exited
-        if (exit !== 0) {
-          log.error("Failed to install Gopls")
-          return false
-        }
+        await new Promise((resolve) => proc.on("exit", resolve))
         log.info("Gopls installed successfully")
         return true
       } catch (error) {
@@ -321,14 +321,15 @@ export namespace LSPInstaller {
 
         const downloadUrl = `https://github.com/rust-lang/rust-analyzer/releases/latest/download/rust-analyzer-${target}.gz`
         const archivePath = path.join(Global.Path.bin, "rust-analyzer.gz")
-        
+
         const response = await fetch(downloadUrl)
         if (!response.ok) {
           log.error("Failed to download Rust Analyzer")
           return false
         }
-        
-        await Bun.file(archivePath).write(response)
+
+        const responseBuffer = Buffer.from(await response.arrayBuffer())
+        await writeFile(archivePath, responseBuffer)
         
         // Decompress gzip
         await $`gunzip -f ${archivePath}`.cwd(Global.Path.bin).quiet().nothrow()
@@ -401,7 +402,8 @@ export namespace LSPInstaller {
         }
 
         const tempPath = path.join(Global.Path.bin, assetName)
-        await Bun.file(tempPath).write(downloadResponse)
+        const responseBuffer = Buffer.from(await downloadResponse.arrayBuffer())
+        await writeFile(tempPath, responseBuffer)
 
         const extractPath = path.join(Global.Path.bin, "lua-ls")
         await fs.mkdir(extractPath, { recursive: true })
@@ -435,20 +437,21 @@ export namespace LSPInstaller {
     extensions: [".yaml", ".yml"],
     async install(options = {}) {
       const js = path.join(Global.Path.bin, "node_modules", "yaml-language-server", "bin", "yaml-language-server")
-      
-      if (!options.force && (await Bun.file(js).exists())) {
+
+      if (!options.force && (await file(js).exists())) {
         log.info("YAML Language Server is already installed", { path: js })
         return true
       }
 
       log.info("Installing YAML Language Server...")
       try {
-        await Bun.spawn([BunProc.which(), "install", "yaml-language-server"], {
+        const proc = spawnAsync([BunProc.which(), "install", "yaml-language-server"], {
           cwd: Global.Path.bin,
           env: { ...process.env, BUN_BE_BUN: "1" },
           stdout: options.verbose ? "inherit" : "pipe",
           stderr: options.verbose ? "inherit" : "pipe",
-        }).exited
+        })
+        await new Promise((resolve) => proc.on("exit", resolve))
         log.info("YAML Language Server installed successfully")
         return true
       } catch (error) {
@@ -458,7 +461,7 @@ export namespace LSPInstaller {
     },
     async isInstalled() {
       const js = path.join(Global.Path.bin, "node_modules", "yaml-language-server", "bin", "yaml-language-server")
-      return await Bun.file(js).exists()
+      return await file(js).exists()
     },
   }
 
@@ -470,20 +473,21 @@ export namespace LSPInstaller {
     extensions: [".json"],
     async install(options = {}) {
       const js = path.join(Global.Path.bin, "node_modules", "vscode-json-languageserver", "bin", "vscode-json-languageserver")
-      
-      if (!options.force && (await Bun.file(js).exists())) {
+
+      if (!options.force && (await file(js).exists())) {
         log.info("JSON Language Server is already installed", { path: js })
         return true
       }
 
       log.info("Installing JSON Language Server...")
       try {
-        await Bun.spawn([BunProc.which(), "install", "vscode-json-languageserver"], {
+        const proc = spawnAsync([BunProc.which(), "install", "vscode-json-languageserver"], {
           cwd: Global.Path.bin,
           env: { ...process.env, BUN_BE_BUN: "1" },
           stdout: options.verbose ? "inherit" : "pipe",
           stderr: options.verbose ? "inherit" : "pipe",
-        }).exited
+        })
+        await new Promise((resolve) => proc.on("exit", resolve))
         log.info("JSON Language Server installed successfully")
         return true
       } catch (error) {
@@ -493,7 +497,7 @@ export namespace LSPInstaller {
     },
     async isInstalled() {
       const js = path.join(Global.Path.bin, "node_modules", "vscode-json-languageserver", "bin", "vscode-json-languageserver")
-      return await Bun.file(js).exists()
+      return await file(js).exists()
     },
   }
 
@@ -505,20 +509,21 @@ export namespace LSPInstaller {
     extensions: [".dockerfile", "Dockerfile"],
     async install(options = {}) {
       const js = path.join(Global.Path.bin, "node_modules", "dockerfile-language-server-nodejs", "lib", "server.js")
-      
-      if (!options.force && (await Bun.file(js).exists())) {
+
+      if (!options.force && (await file(js).exists())) {
         log.info("Dockerfile Language Server is already installed", { path: js })
         return true
       }
 
       log.info("Installing Dockerfile Language Server...")
       try {
-        await Bun.spawn([BunProc.which(), "install", "dockerfile-language-server-nodejs"], {
+        const proc = spawnAsync([BunProc.which(), "install", "dockerfile-language-server-nodejs"], {
           cwd: Global.Path.bin,
           env: { ...process.env, BUN_BE_BUN: "1" },
           stdout: options.verbose ? "inherit" : "pipe",
           stderr: options.verbose ? "inherit" : "pipe",
-        }).exited
+        })
+        await new Promise((resolve) => proc.on("exit", resolve))
         log.info("Dockerfile Language Server installed successfully")
         return true
       } catch (error) {
@@ -528,7 +533,7 @@ export namespace LSPInstaller {
     },
     async isInstalled() {
       const js = path.join(Global.Path.bin, "node_modules", "dockerfile-language-server-nodejs", "lib", "server.js")
-      return await Bun.file(js).exists()
+      return await file(js).exists()
     },
   }
 
@@ -540,20 +545,21 @@ export namespace LSPInstaller {
     extensions: [".sh", ".bash"],
     async install(options = {}) {
       const js = path.join(Global.Path.bin, "node_modules", "bash-language-server", "out", "cli.js")
-      
-      if (!options.force && (await Bun.file(js).exists())) {
+
+      if (!options.force && (await file(js).exists())) {
         log.info("Bash Language Server is already installed", { path: js })
         return true
       }
 
       log.info("Installing Bash Language Server...")
       try {
-        await Bun.spawn([BunProc.which(), "install", "bash-language-server"], {
+        const proc = spawnAsync([BunProc.which(), "install", "bash-language-server"], {
           cwd: Global.Path.bin,
           env: { ...process.env, BUN_BE_BUN: "1" },
           stdout: options.verbose ? "inherit" : "pipe",
           stderr: options.verbose ? "inherit" : "pipe",
-        }).exited
+        })
+        await new Promise((resolve) => proc.on("exit", resolve))
         log.info("Bash Language Server installed successfully")
         return true
       } catch (error) {
@@ -563,7 +569,7 @@ export namespace LSPInstaller {
     },
     async isInstalled() {
       const js = path.join(Global.Path.bin, "node_modules", "bash-language-server", "out", "cli.js")
-      return await Bun.file(js).exists()
+      return await file(js).exists()
     },
   }
 
@@ -595,9 +601,9 @@ export namespace LSPInstaller {
       results.set(pkg.id, success)
       
       if (success) {
-        log.info(`âœ?${pkg.name} installed successfully`)
+        log.info(`ï¿½?${pkg.name} installed successfully`)
       } else {
-        log.error(`âœ?${pkg.name} installation failed`)
+        log.error(`ï¿½?${pkg.name} installation failed`)
       }
     }
     
