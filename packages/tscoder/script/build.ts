@@ -1,6 +1,5 @@
 #!/usr/bin/env bun
 
-import solidPlugin from "../node_modules/@opentui/solid/scripts/solid-plugin"
 import path from "path"
 import fs from "fs"
 import { $ } from "bun"
@@ -11,6 +10,10 @@ const __dirname = path.dirname(__filename)
 const dir = path.resolve(__dirname, "..")
 
 process.chdir(dir)
+
+// Dynamically import solidPlugin to handle monorepo structure
+const solidPluginPath = await import.meta.resolve("@opentui/solid/scripts/solid-plugin")
+const { default: solidPlugin } = await import(solidPluginPath)
 
 import pkg from "../package.json"
 import { Script } from "@tscoder/script"

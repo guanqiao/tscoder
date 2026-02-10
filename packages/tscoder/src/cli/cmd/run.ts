@@ -69,7 +69,7 @@ function fallback(part: ToolPart) {
     ("title" in state && state.title ? state.title : undefined) ||
     (input && typeof input === "object" && Object.keys(input).length > 0 ? JSON.stringify(input) : "Unknown")
   inline({
-    icon: "�?,
+    icon: "\u{1F527}",
     title: `${part.tool} ${title}`,
   })
 }
@@ -82,7 +82,7 @@ function glob(info: ToolProps<typeof GlobTool>) {
   const description =
     num === undefined ? suffix : `${suffix}${suffix ? " · " : ""}${num} ${num === 1 ? "match" : "matches"}`
   inline({
-    icon: "�?,
+    icon: "\u{1F4C1}",
     title,
     ...(description && { description }),
   })
@@ -96,7 +96,7 @@ function grep(info: ToolProps<typeof GrepTool>) {
   const description =
     num === undefined ? suffix : `${suffix}${suffix ? " · " : ""}${num} ${num === 1 ? "match" : "matches"}`
   inline({
-    icon: "�?,
+    icon: "\u{1F50D}",
     title,
     ...(description && { description }),
   })
@@ -105,7 +105,7 @@ function grep(info: ToolProps<typeof GrepTool>) {
 function list(info: ToolProps<typeof ListTool>) {
   const dir = info.input.path ? normalizePath(info.input.path) : ""
   inline({
-    icon: "�?,
+    icon: "\u{1F4C2}",
     title: dir ? `List ${dir}` : "List",
   })
 }
@@ -118,7 +118,7 @@ function read(info: ToolProps<typeof ReadTool>) {
   })
   const description = pairs.length ? `[${pairs.map(([key, value]) => `${key}=${value}`).join(", ")}]` : undefined
   inline({
-    icon: "�?,
+    icon: "\u{1F4C4}",
     title: `Read ${file}`,
     ...(description && { description }),
   })
@@ -127,7 +127,7 @@ function read(info: ToolProps<typeof ReadTool>) {
 function write(info: ToolProps<typeof WriteTool>) {
   block(
     {
-      icon: "�?,
+      icon: "\u{1F4DD}",
       title: `Write ${normalizePath(info.input.filePath)}`,
     },
     info.part.state.status === "completed" ? info.part.state.output : undefined,
@@ -146,7 +146,7 @@ function edit(info: ToolProps<typeof EditTool>) {
   const diff = info.metadata.diff
   block(
     {
-      icon: "�?,
+      icon: "\u270F",
       title: `Edit ${title}`,
     },
     diff,
@@ -155,14 +155,14 @@ function edit(info: ToolProps<typeof EditTool>) {
 
 function codesearch(info: ToolProps<typeof CodeSearchTool>) {
   inline({
-    icon: "�?,
+    icon: "\u{1F50E}",
     title: `Exa Code Search "${info.input.query}"`,
   })
 }
 
 function websearch(info: ToolProps<typeof WebSearchTool>) {
   inline({
-    icon: "�?,
+    icon: "\u{1F310}",
     title: `Exa Web Search "${info.input.query}"`,
   })
 }
@@ -173,7 +173,7 @@ function task(info: ToolProps<typeof TaskTool>) {
   const started = info.part.state.status === "running"
   const name = desc ?? `${agent} Task`
   inline({
-    icon: started ? "�? : "�?,
+    icon: started ? "\u26A1" : "\u23F1",
     title: name,
     description: desc ? `${agent} Agent` : undefined,
   })
@@ -181,7 +181,7 @@ function task(info: ToolProps<typeof TaskTool>) {
 
 function skill(info: ToolProps<typeof SkillTool>) {
   inline({
-    icon: "�?,
+    icon: "\u{1F3AF}",
     title: `Skill "${info.input.name}"`,
   })
 }

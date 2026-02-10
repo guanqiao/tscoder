@@ -114,17 +114,17 @@ async function showRemovalSummary(targets: RemovalTargets, method: Installation.
     const size = await getDirectorySize(dir.path)
     const sizeStr = formatSize(size)
     const status = dir.keep ? UI.Style.TEXT_DIM + "(keeping)" : ""
-    const prefix = dir.keep ? "�? : "�?
+    const prefix = dir.keep ? "\u25CB" : "\u2717"
 
     prompts.log.info(`  ${prefix} ${dir.label}: ${shortenPath(dir.path)} ${UI.Style.TEXT_DIM}(${sizeStr})${status}`)
   }
 
   if (targets.binary) {
-    prompts.log.info(`  �?Binary: ${shortenPath(targets.binary)}`)
+    prompts.log.info(`  \u25A0 Binary: ${shortenPath(targets.binary)}`)
   }
 
   if (targets.shellConfig) {
-    prompts.log.info(`  �?Shell PATH in ${shortenPath(targets.shellConfig)}`)
+    prompts.log.info(`  \u25A0 Shell PATH in ${shortenPath(targets.shellConfig)}`)
   }
 
   if (method !== "curl" && method !== "unknown") {
@@ -137,7 +137,7 @@ async function showRemovalSummary(targets: RemovalTargets, method: Installation.
       choco: "choco uninstall opencode",
       scoop: "scoop uninstall opencode",
     }
-    prompts.log.info(`  �?Package: ${cmds[method] || method}`)
+    prompts.log.info(`  \u25A0 Package: ${cmds[method] || method}`)
   }
 }
 

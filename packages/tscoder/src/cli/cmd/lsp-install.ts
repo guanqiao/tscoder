@@ -61,8 +61,8 @@ export const LspInstallCommand = cmd({
       for (const pkg of LSPInstaller.AllPackages) {
         const isInstalled = status.get(pkg.id) ?? false
         const statusIcon = isInstalled 
-          ? UI.Style.TEXT_SUCCESS_BOLD + "âœ? + UI.Style.TEXT_NORMAL
-          : UI.Style.TEXT_ERROR_BOLD + "âœ? + UI.Style.TEXT_NORMAL
+          ? UI.Style.TEXT_SUCCESS_BOLD + "\u2713" + UI.Style.TEXT_NORMAL
+          : UI.Style.TEXT_ERROR_BOLD + "\u2717" + UI.Style.TEXT_NORMAL
         const statusText = isInstalled ? "installed" : "not installed"
         UI.println(`  ${statusIcon} ${pkg.id.padEnd(15)} - ${statusText}`)
         if (isInstalled) installedCount++
@@ -109,10 +109,10 @@ export const LspInstallCommand = cmd({
       const name = pkg?.name ?? id
       
       if (success) {
-        UI.println(`  ${UI.Style.TEXT_SUCCESS_BOLD}âœ?{UI.Style.TEXT_NORMAL} ${name} - installed successfully`)
+        UI.println(`  ${UI.Style.TEXT_SUCCESS_BOLD}\u2713${UI.Style.TEXT_NORMAL} ${name} - installed successfully`)
         successCount++
       } else {
-        UI.println(`  ${UI.Style.TEXT_ERROR_BOLD}âœ?{UI.Style.TEXT_NORMAL} ${name} - installation failed`)
+        UI.println(`  ${UI.Style.TEXT_ERROR_BOLD}\u2717${UI.Style.TEXT_NORMAL} ${name} - installation failed`)
         failCount++
       }
     }

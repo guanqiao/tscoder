@@ -61,11 +61,11 @@ export function Home() {
         <text fg={theme.text}>
           <Switch>
             <Match when={mcpError()}>
-              <span style={{ fg: theme.error }}>â€?/span> mcp errors{" "}
+              <span style={{ fg: theme.error }}>\u2717</span> mcp errors{" "}
               <span style={{ fg: theme.textMuted }}>ctrl+x s</span>
             </Match>
             <Match when={true}>
-              <span style={{ fg: theme.success }}>â€?/span>{" "}
+              <span style={{ fg: theme.success }}>\u2713</span>{" "}
               {Locale.pluralize(connectedMcpCount(), "{} mcp server", "{} mcp servers")}
             </Match>
           </Switch>
@@ -119,10 +119,10 @@ export function Home() {
             <text fg={theme.text}>
               <Switch>
                 <Match when={mcpError()}>
-                  <span style={{ fg: theme.error }}>âŠ?</span>
+                  <span style={{ fg: theme.error }}>ï¿½?</span>
                 </Match>
                 <Match when={true}>
-                  <span style={{ fg: connectedMcpCount() > 0 ? theme.success : theme.textMuted }}>âŠ?</span>
+                  <span style={{ fg: connectedMcpCount() > 0 ? theme.success : theme.textMuted }}>ï¿½?</span>
                 </Match>
               </Switch>
               {connectedMcpCount()} MCP

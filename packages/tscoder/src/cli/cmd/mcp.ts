@@ -19,11 +19,11 @@ import { file, writeFile } from "@/platform"
 function getAuthStatusIcon(status: MCP.AuthStatus): string {
   switch (status) {
     case "authenticated":
-      return "�?
+      return "\u2713"
     case "expired":
-      return "�?
+      return "\u26A0"
     case "not_authenticated":
-      return "�?
+      return "\u2717"
   }
 }
 
@@ -99,26 +99,26 @@ export const McpListCommand = cmd({
           let hint = ""
 
           if (!status) {
-            statusIcon = "�?
+            statusIcon = "\u25CB"
             statusText = "not initialized"
           } else if (status.status === "connected") {
-            statusIcon = "�?
+            statusIcon = "\u2713"
             statusText = "connected"
             if (hasOAuth && hasStoredTokens) {
               hint = " (OAuth)"
             }
           } else if (status.status === "disabled") {
-            statusIcon = "�?
+            statusIcon = "\u25A0"
             statusText = "disabled"
           } else if (status.status === "needs_auth") {
-            statusIcon = "�?
+            statusIcon = "\u2717"
             statusText = "needs authentication"
           } else if (status.status === "needs_client_registration") {
-            statusIcon = "�?
+            statusIcon = "\u26A0"
             statusText = "needs client registration"
             hint = "\n    " + status.error
           } else {
-            statusIcon = "�?
+            statusIcon = "\u2717"
             statusText = "failed"
             hint = "\n    " + status.error
           }

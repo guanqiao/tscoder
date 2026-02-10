@@ -61,13 +61,13 @@ export namespace Locale {
 
   export function truncate(str: string, len: number): string {
     if (str.length <= len) return str
-    return str.slice(0, len - 1) + "â€?
+    return str.slice(0, len - 1) + "\u2026"
   }
 
   export function truncateMiddle(str: string, maxLength: number = 35): string {
     if (str.length <= maxLength) return str
 
-    const ellipsis = "â€?
+    const ellipsis = "\u2026"
     const keepStart = Math.ceil((maxLength - ellipsis.length) / 2)
     const keepEnd = Math.floor((maxLength - ellipsis.length) / 2)
 

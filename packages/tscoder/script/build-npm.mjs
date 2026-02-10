@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 
 import path from "path"
 import fs from "fs/promises"
@@ -46,7 +46,18 @@ await fs.mkdir(distDir, { recursive: true })
 console.log("Building with esbuild...")
 
 try {
-  execSync(`npx esbuild ./src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=${path.join(distDir, "index.js")} --sourcemap --external:@opentui/core --external:@parcel/watcher --external:tree-sitter --external:tree-sitter-bash`, {
+  const externals = [
+    "@opentui/core",
+    "@parcel/watcher",
+    "tree-sitter",
+    "tree-sitter-bash",
+    "@standard-community/standard-json",
+    "@standard-community/standard-openapi",
+    "@gitlab/opencode-gitlab-auth",
+    "@gitlab/gitlab-ai-provider",
+    "web-tree-sitter",
+  ].map(e => `--external:${e}`).join(" ")
+  execSync(`npx esbuild ./src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=${path.join(distDir, "index.js")} --sourcemap ${externals}`, {
     cwd: dir,
     stdio: "inherit",
   })
