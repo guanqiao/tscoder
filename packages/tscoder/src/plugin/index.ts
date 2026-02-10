@@ -36,7 +36,7 @@ export namespace Plugin {
       worktree: Instance.worktree,
       directory: Instance.directory,
       serverUrl: Server.url(),
-      $: Bun.$,
+      $: (await import("@/platform/shell")).$,
     }
 
     for (const plugin of INTERNAL_PLUGINS) {

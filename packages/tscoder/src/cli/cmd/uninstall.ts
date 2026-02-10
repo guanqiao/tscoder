@@ -3,11 +3,11 @@ import { UI } from "../ui"
 import * as prompts from "@clack/prompts"
 import { Installation } from "../../installation"
 import { Global } from "../../global"
-import { $ } from "bun"
 import fs from "fs/promises"
 import path from "path"
 import os from "os"
 import { file, writeFile } from "@/platform"
+import { spawn } from "node:child_process"
 
 interface UninstallArgs {
   keepConfig: boolean
@@ -192,20 +192,28 @@ async function executeUninstall(method: Installation.Method, targets: RemovalTar
     const cmd = cmds[method]
     if (cmd) {
       spinner.start(`Running ${cmd.join(" ")}...`)
-      const result =
-        method === "choco"
-          ? await $`echo Y | choco uninstall opencode -y -r`.quiet().nothrow()
-          : await $`${cmd}`.quiet().nothrow()
-      if (result.exitCode !== 0) {
-        spinner.stop(`Package manager uninstall failed: exit code ${result.exitCode}`, 1)
-        if (
-          method === "choco" &&
-          result.stdout.toString("utf8").includes("not running from an elevated command shell")
-        ) {
-          prompts.log.warn(`You may need to run '${cmd.join(" ")}' from an elevated command shell`)
+      const exitCode = await new Promise<number>((resolve) => {
+        if (method === "choco") {
+          const proc = spawn("powershell.exe", ["-Command", `echo Y | choco uninstall opencode -y -r`], {
+            stdio: "pipe",
+          })
+          let stdout = ""
+          proc.stdout?.on("data", (data) => (stdout += data))
+          proc.on("exit", (code) => {
+            if (code !== 0 && stdout.includes("not running from an elevated command shell")) {
+              prompts.log.warn(`You may need to run '${cmd.join(" ")}' from an elevated command shell`)
+            }
+            resolve(code ?? 1)
+          })
         } else {
-          prompts.log.warn(`You may need to run manually: ${cmd.join(" ")}`)
+          const proc = spawn(cmd[0], cmd.slice(1), { stdio: "pipe" })
+          proc.on("exit", (code) => resolve(code ?? 1))
         }
+        proc.on("error", () => resolve(1))
+      })
+      if (exitCode !== 0) {
+        spinner.stop(`Package manager uninstall failed: exit code ${exitCode}`, 1)
+        prompts.log.warn(`You may need to run manually: ${cmd.join(" ")}`)
       } else {
         spinner.stop("Package removed")
       }

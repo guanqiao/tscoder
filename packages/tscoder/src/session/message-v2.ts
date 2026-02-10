@@ -9,8 +9,15 @@ import { fn } from "@/util/fn"
 import { Storage } from "@/storage/storage"
 import { ProviderError } from "@/provider/error"
 import { iife } from "@/util/iife"
-import { type SystemError } from "bun"
 import type { Provider } from "@/provider/provider"
+
+// SystemError interface for cross-platform compatibility
+interface SystemError extends Error {
+  errno?: number
+  code?: string
+  path?: string
+  syscall?: string
+}
 
 export namespace MessageV2 {
   export const OutputLengthError = NamedError.create("MessageOutputLengthError", z.object({}))

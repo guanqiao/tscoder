@@ -1,5 +1,5 @@
 import { TextAttributes } from "@opentui/core"
-import { fileURLToPath } from "bun"
+import { fileURLToPath } from "node:url"
 import { useTheme } from "../context/theme"
 import { useDialog } from "@tui/ui/dialog"
 import { useSync } from "@tui/context/sync"
@@ -79,7 +79,7 @@ export function DialogStatus() {
                     )[item.status],
                   }}
                 >
-                  â€?
+                  ï¿½?
                 </text>
                 <text fg={theme.text} wrapMode="word">
                   <b>{key}</b>{" "}
@@ -117,7 +117,7 @@ export function DialogStatus() {
                     }[item.status],
                   }}
                 >
-                  â€?
+                  ï¿½?
                 </text>
                 <text fg={theme.text} wrapMode="word">
                   <b>{item.id}</b> <span style={{ fg: theme.textMuted }}>{item.root}</span>
@@ -139,7 +139,7 @@ export function DialogStatus() {
                     fg: theme.success,
                   }}
                 >
-                  â€?
+                  ï¿½?
                 </text>
                 <text wrapMode="word" fg={theme.text}>
                   <b>{item.name}</b>
@@ -161,7 +161,7 @@ export function DialogStatus() {
                     fg: theme.success,
                   }}
                 >
-                  â€?
+                  ï¿½?
                 </text>
                 <text wrapMode="word" fg={theme.text}>
                   <b>{item.name}</b>

@@ -1,6 +1,6 @@
 import { BusEvent } from "@/bus/bus-event"
 import path from "path"
-import { $ } from "bun"
+import { $ } from "@/platform/shell"
 import z from "zod"
 import { NamedError } from "@tscoder/util/error"
 import { Log } from "../util/log"

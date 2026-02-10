@@ -26,8 +26,8 @@ import { Provider } from "../../provider/provider"
 import { Bus } from "../../bus"
 import { MessageV2 } from "../../session/message-v2"
 import { SessionPrompt } from "@/session/prompt"
-import { $ } from "bun"
 import { sleep, writeFile } from "@/platform"
+import { $ } from "@/platform/shell"
 
 type GitHubAuthor = {
   login: string
