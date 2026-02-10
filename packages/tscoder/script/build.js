@@ -14,12 +14,16 @@ process.chdir(dir);
 // Dynamically import solidPlugin to handle monorepo structure
 async function resolveSolidPlugin() {
   try {
+    // For Windows, we need to use file:// URL for ESM imports
     const solidPluginPath = path.resolve(dir, "node_modules", "@opentui", "solid", "scripts", "solid-plugin.js");
-    const { default: solidPlugin } = await import(solidPluginPath);
+    const solidPluginUrl = `file://${solidPluginPath.replace(/\\/g, "/").replace(/^([a-zA-Z]):/, (_, drive) => drive.toUpperCase() + ":")}`;
+    const { default: solidPlugin } = await import(solidPluginUrl);
     return solidPlugin;
   } catch (error) {
     console.error("Error loading solidPlugin:", error);
-    throw error;
+    // For now, we'll skip solidPlugin since we're using esbuild directly
+    console.log("Skipping solidPlugin for esbuild build");
+    return undefined;
   }
 }
 
