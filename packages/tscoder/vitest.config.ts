@@ -8,6 +8,7 @@ export default defineConfig({
     include: ["test/**/*.test.ts"],
     exclude: ["node_modules", "dist"],
     setupFiles: ["./test/preload.ts"],
+    testTimeout: 30000, // 30 seconds for LSP tests
   },
   resolve: {
     alias: {

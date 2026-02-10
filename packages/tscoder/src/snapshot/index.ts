@@ -104,7 +104,7 @@ export namespace Snapshot {
         .split("\n")
         .map((x) => x.trim())
         .filter(Boolean)
-        .map((x) => path.join(Instance.worktree, x)),
+        .map((x) => path.normalize(path.join(Instance.worktree, x))),
     }
   }
 
@@ -237,7 +237,7 @@ export namespace Snapshot {
       const added = isBinaryFile ? 0 : parseInt(additions)
       const deleted = isBinaryFile ? 0 : parseInt(deletions)
       result.push({
-        file,
+        file: path.normalize(file),
         before,
         after,
         additions: Number.isFinite(added) ? added : 0,
