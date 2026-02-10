@@ -12,6 +12,7 @@ import { Provider } from "@/provider/provider"
 import { useArgs } from "./args"
 import { useSDK } from "./sdk"
 import { RGBA } from "@opentui/core"
+import { file, writeFile } from "@/platform"
 
 export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
   name: "Local",
@@ -119,7 +120,7 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
         variant: {},
       })
 
-      const file = Bun.file(path.join(Global.Path.state, "model.json"))
+      const f = file(path.join(Global.Path.state, "model.json"))
       const state = {
         pending: false,
       }
@@ -130,8 +131,8 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
           return
         }
         state.pending = false
-        Bun.write(
-          file,
+        writeFile(
+          path.join(Global.Path.state, "model.json"),
           JSON.stringify({
             recent: modelStore.recent,
             favorite: modelStore.favorite,
@@ -140,7 +141,7 @@ export const { use: useLocal, provider: LocalProvider } = createSimpleContext({
         )
       }
 
-      file
+      f
         .json()
         .then((x) => {
           if (Array.isArray(x.recent)) setModelStore("recent", x.recent)

@@ -1,8 +1,10 @@
 import { defer } from "@/util/defer"
-import { rm } from "node:fs/promises"
+import { rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { CliRenderer } from "@opentui/core"
+import { spawn } from "node:child_process"
+import { file } from "@/platform"
 
 export namespace Editor {
   export async function open(opts: { value: string; renderer: CliRenderer }): Promise<string | undefined> {
@@ -12,18 +14,17 @@ export namespace Editor {
     const filepath = join(tmpdir(), `${Date.now()}.md`)
     await using _ = defer(async () => rm(filepath, { force: true }))
 
-    await Bun.write(filepath, opts.value)
+    await writeFile(filepath, opts.value)
     opts.renderer.suspend()
     opts.renderer.currentRenderBuffer.clear()
     const parts = editor.split(" ")
-    const proc = Bun.spawn({
-      cmd: [...parts, filepath],
-      stdin: "inherit",
-      stdout: "inherit",
-      stderr: "inherit",
+    await new Promise<void>((resolve) => {
+      const proc = spawn(parts[0], [...parts.slice(1), filepath], {
+        stdio: "inherit",
+      })
+      proc.on("exit", () => resolve())
     })
-    await proc.exited
-    const content = await Bun.file(filepath).text()
+    const content = await file(filepath).text()
     opts.renderer.currentRenderBuffer.clear()
     opts.renderer.resume()
     opts.renderer.requestRender()

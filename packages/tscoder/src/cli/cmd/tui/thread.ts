@@ -9,6 +9,7 @@ import { Log } from "@/util/log"
 import { withNetworkOptions, resolveNetworkOptions } from "@/cli/network"
 import type { Event } from "@tscoder/sdk/v2"
 import type { EventSource } from "./context/sdk"
+import { file } from "@/platform"
 
 declare global {
   const OPENCODE_WORKER_PATH: string
@@ -89,7 +90,7 @@ export const TuiThreadCommand = cmd({
     const distWorker = new URL("./cli/cmd/tui/worker.js", import.meta.url)
     const workerPath = await iife(async () => {
       if (typeof OPENCODE_WORKER_PATH !== "undefined") return OPENCODE_WORKER_PATH
-      if (await Bun.file(distWorker).exists()) return distWorker
+      if (await file(distWorker).exists()) return distWorker
       return localWorker
     })
     try {
@@ -119,10 +120,27 @@ export const TuiThreadCommand = cmd({
     })
 
     const prompt = await iife(async () => {
-      const piped = !process.stdin.isTTY ? await Bun.stdin.text() : undefined
+      const piped = !process.stdin.isTTY ? await readStdin() : undefined
       if (!args.prompt) return piped
       return piped ? piped + "\n" + args.prompt : args.prompt
     })
+
+    async function readStdin(): Promise<string> {
+      return new Promise((resolve) => {
+        let data = ""
+        process.stdin.on("data", (chunk) => {
+          data += chunk
+        })
+        process.stdin.on("end", () => {
+          resolve(data)
+        })
+        process.stdin.on("error", () => {
+          resolve("")
+        })
+        // Set a timeout in case stdin is not closed
+        setTimeout(() => resolve(data), 1000)
+      })
+    }
 
     // Check if server should be started (port or hostname explicitly set in CLI or config)
     const networkOpts = await resolveNetworkOptions(args)

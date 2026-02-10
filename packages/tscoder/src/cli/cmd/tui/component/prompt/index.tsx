@@ -32,6 +32,8 @@ import { useToast } from "../../ui/toast"
 import { useKV } from "../../context/kv"
 import { useTextareaKeybindings } from "../textarea-keybindings"
 import { DialogSkill } from "../dialog-skill"
+import { file, stringWidth } from "@/platform"
+import path from "path"
 
 export type PromptProps = {
   sessionID?: string
@@ -313,7 +315,7 @@ export function Prompt(props: PromptProps) {
             parts: updatedNonTextParts,
           })
           restoreExtmarksFromParts(updatedNonTextParts)
-          input.cursorOffset = Bun.stringWidth(content)
+          input.cursorOffset = stringWidth(content)
         },
       },
       {
@@ -784,8 +786,8 @@ export function Prompt(props: PromptProps) {
           borderColor={highlight()}
           customBorderChars={{
             ...EmptyBorder,
-            vertical: "â”?,
-            bottomLeft: "â•?,
+            vertical: "ï¿½?,
+            bottomLeft: "ï¿½?,
           }}
         >
           <box
@@ -910,26 +912,30 @@ export function Prompt(props: PromptProps) {
                 const isUrl = /^(https?):\/\//.test(filepath)
                 if (!isUrl) {
                   try {
-                    const file = Bun.file(filepath)
+                    const f = file(filepath)
                     // Handle SVG as raw text content, not as base64 image
-                    if (file.type === "image/svg+xml") {
+                    const isSvg = filepath.toLowerCase().endsWith('.svg')
+                    if (isSvg) {
                       event.preventDefault()
-                      const content = await file.text().catch(() => {})
+                      const content = await f.text().catch(() => {})
                       if (content) {
-                        pasteText(content, `[SVG: ${file.name ?? "image"}]`)
+                        pasteText(content, `[SVG: ${path.basename(filepath) ?? "image"}]`)
                         return
                       }
                     }
-                    if (file.type.startsWith("image/")) {
+                    // Check for image extensions
+                    const imageExts = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp']
+                    const isImage = imageExts.some(ext => filepath.toLowerCase().endsWith(ext))
+                    if (isImage) {
                       event.preventDefault()
-                      const content = await file
+                        const content = await f
                         .arrayBuffer()
                         .then((buffer) => Buffer.from(buffer).toString("base64"))
                         .catch(() => {})
                       if (content) {
                         await pasteImage({
-                          filename: file.name,
-                          mime: file.type,
+                          filename: path.basename(filepath),
+                          mime: "image/png",
                           content,
                         })
                         return
@@ -1000,7 +1006,7 @@ export function Prompt(props: PromptProps) {
           borderColor={highlight()}
           customBorderChars={{
             ...EmptyBorder,
-            vertical: theme.backgroundElement.a !== 0 ? "â•? : " ",
+            vertical: theme.backgroundElement.a !== 0 ? "ï¿½? : " ",
           }}
         >
           <box
