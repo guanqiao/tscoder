@@ -1,6 +1,9 @@
 import { OpenAICompatibleChatLanguageModel } from "@/provider/sdk/copilot/chat/openai-compatible-chat-language-model"
-import { describe, test, expect, mock } from "vitest"
+import { describe, test, expect, vi } from "vitest"
 import type { LanguageModelV2Prompt } from "@ai-sdk/provider"
+
+// 兼容层：vitest v1 使用 vi.fn() 而不是 mock()
+const mock = vi.fn
 
 async function convertReadableStreamToArray<T>(stream: ReadableStream<T>): Promise<T[]> {
   const reader = stream.getReader()
