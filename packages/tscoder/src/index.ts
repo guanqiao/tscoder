@@ -27,6 +27,7 @@ import { WebCommand } from "./cli/cmd/web"
 import { PrCommand } from "./cli/cmd/pr"
 import { SessionCommand } from "./cli/cmd/session"
 import { LspInstallCommand } from "./cli/cmd/lsp-install"
+import { ResolveMessage } from "node:module"
 
 process.on("unhandledRejection", (e) => {
   Log.Default.error("rejection", {
