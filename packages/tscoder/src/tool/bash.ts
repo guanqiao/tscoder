@@ -32,19 +32,17 @@ const resolveWasm = (asset: string) => {
 
 const parser = lazy(async () => {
   const { Parser } = await import("web-tree-sitter")
-  const { default: treeWasm } = await import("web-tree-sitter/tree-sitter.wasm" as string, {
-    with: { type: "wasm" },
-  })
-  const treePath = resolveWasm(treeWasm)
+  
+  // Load WASM files using standard Node.js methods
+  const treePath = require.resolve("web-tree-sitter/tree-sitter.wasm")
+  const bashPath = require.resolve("tree-sitter-bash/tree-sitter-bash.wasm")
+  
   await Parser.init({
     locateFile() {
       return treePath
     },
   })
-  const { default: bashWasm } = await import("tree-sitter-bash/tree-sitter-bash.wasm" as string, {
-    with: { type: "wasm" },
-  })
-  const bashPath = resolveWasm(bashWasm)
+  
   const bashLanguage = await Language.load(bashPath)
   const p = new Parser()
   p.setLanguage(bashLanguage)
