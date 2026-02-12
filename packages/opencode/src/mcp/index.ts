@@ -303,46 +303,45 @@ export namespace MCP {
     }
 
     // Local MCP server connection
-      const [cmd, ...args] = mcp.command
-      const cwd = Instance.directory
-      const transport = new StdioClientTransport({
-        stderr: "pipe",
-        command: cmd,
-        args,
-        cwd,
-        env: {
-          ...process.env,
-          ...(cmd === "opencode" ? { BUN_BE_BUN: "1" } : {}),
-          ...mcp.environment,
-        },
-      })
-      transport.stderr?.on("data", (chunk: Buffer) => {
-        log.info(`mcp stderr: ${chunk.toString()}`, { key })
-      })
+    const [cmd, ...args] = mcp.command
+    const cwd = Instance.directory
+    const transport = new StdioClientTransport({
+      stderr: "pipe",
+      command: cmd,
+      args,
+      cwd,
+      env: {
+        ...process.env,
+        ...(cmd === "opencode" ? { BUN_BE_BUN: "1" } : {}),
+        ...mcp.environment,
+      },
+    })
+    transport.stderr?.on("data", (chunk: Buffer) => {
+      log.info(`mcp stderr: ${chunk.toString()}`, { key })
+    })
 
-      const connectTimeout = mcp.timeout ?? DEFAULT_TIMEOUT
-      try {
-        const client = new Client({
-          name: "opencode",
-          version: Installation.VERSION,
-        })
-        await withTimeout(client.connect(transport), connectTimeout)
-        registerNotificationHandlers(client, key)
-        mcpClient = client
-        status = {
-          status: "connected",
-        }
-      } catch (error) {
-        log.error("local mcp startup failed", {
-          key,
-          command: mcp.command,
-          cwd,
-          error: error instanceof Error ? error.message : String(error),
-        })
-        status = {
-          status: "failed" as const,
-          error: error instanceof Error ? error.message : String(error),
-        }
+    const connectTimeout = mcp.timeout ?? DEFAULT_TIMEOUT
+    try {
+      const client = new Client({
+        name: "opencode",
+        version: Installation.VERSION,
+      })
+      await withTimeout(client.connect(transport), connectTimeout)
+      registerNotificationHandlers(client, key)
+      mcpClient = client
+      status = {
+        status: "connected",
+      }
+    } catch (error) {
+      log.error("local mcp startup failed", {
+        key,
+        command: mcp.command,
+        cwd,
+        error: error instanceof Error ? error.message : String(error),
+      })
+      status = {
+        status: "failed" as const,
+        error: error instanceof Error ? error.message : String(error),
       }
     }
 
