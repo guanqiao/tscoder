@@ -723,18 +723,19 @@ export namespace Provider {
       for (const llm of config.llm) {
         const providerID = `llm-${llm.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`
         
-        // Read CA certificate
-        const caCertPath = llm.caCert.startsWith("~") 
-          ? llm.caCert.replace("~", os.homedir()) 
-          : llm.caCert
-        const caCert = await Bun.file(caCertPath).text().catch(() => {
-          log.error("Failed to read CA certificate", { path: caCertPath, llm: llm.name })
-          return undefined
-        })
-
-        if (!caCert) {
-          log.error("CA certificate is required but not found, skipping LLM", { name: llm.name })
-          continue
+        // Read CA certificate if configured
+        let caCert: string | undefined
+        if (llm.caCert) {
+          const caCertPath = llm.caCert.startsWith("~") 
+            ? llm.caCert.replace("~", os.homedir()) 
+            : llm.caCert
+          caCert = await Bun.file(caCertPath).text().catch(() => {
+            log.error("Failed to read CA certificate", { path: caCertPath, llm: llm.name })
+            return undefined
+          })
+          if (!caCert) {
+            log.warn("CA certificate file not found or empty, continuing without certificate", { name: llm.name })
+          }
         }
 
         const provider: Info = {
@@ -745,7 +746,7 @@ export namespace Provider {
           options: {
             apiKey: llm.apiKey,
             baseURL: llm.endpoint,
-            caCert: caCert,
+            ...(caCert ? { caCert } : {}),
           },
           models: {
             [llm.model]: {

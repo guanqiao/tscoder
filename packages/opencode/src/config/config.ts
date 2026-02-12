@@ -914,14 +914,14 @@ export namespace Config {
   })
   export type Layout = z.infer<typeof Layout>
 
-  // Simplified LLM configuration with mandatory CA certificate
+  // Simplified LLM configuration with optional CA certificate
   export const LLM = z
     .object({
       name: z.string().describe("Display name for this LLM configuration"),
       endpoint: z.string().describe("API endpoint URL"),
       apiKey: z.string().describe("API key for authentication"),
       model: z.string().describe("Model name"),
-      caCert: z.string().describe("Path to CA certificate file"),
+      caCert: z.string().optional().describe("Path to CA certificate file (optional)"),
     })
     .strict()
     .meta({
